@@ -59,4 +59,4 @@ Thanks to [Taylor Hornby](https://defuse.ca/) and [Scott Arciszewski][6] as well
 [5]: https://github.com/defuse/php-encryption
 [6]: https://paragonie.com/blog/author/scott-arcizewski
 [7]: https://insight.sensiolabs.com/projects/56cfd840-dedf-45a4-b35f-520168d8b7df
-[8]: https://scrutinizer-ci.com/g/Carteni/crypto-bundle/?branch=master
+[8]: https://scrutinizer-ci.com/g/Carteni/crypto-bundles/?branch=master
