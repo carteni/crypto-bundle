@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="./Tests/bootstrap.php" colors="true">
+
+    <testsuites>
+        <testsuite name="Crypto Bundle test suite">
+            <directory suffix="Test.php">./Tests/Command</directory>
+            <directory suffix="Test.php">./Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Resources</directory>
+                <directory>./Tests</directory>
+                <directory>./vendor</directory>
+                <directory>./DependencyInjection</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="coverage" lowUpperBound="35" highLowerBound="70"/>
+    </logging>
+
+</phpunit>

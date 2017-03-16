@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Default Services -->
+        <service id="mes_crypto.key_storage.default" class="Mes\Security\CryptoBundle\KeyStorage\KeyStorage" public="false" />
+
+        <service id="mes_crypto.key_generator.default" class="Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator" public="false" />
+
+        <service id="mes_crypto.key_manager.default" class="Mes\Security\CryptoBundle\KeyManager" public="false">
+            <argument type="service" id="mes_crypto.key_storage" />
+            <argument type="service" id="mes_crypto.key_generator" />
+        </service>
+
+        <service id="mes_crypto.encryption.default" class="Mes\Security\CryptoBundle\Encryption" public="false" />
+
+        <service id="mes_crypto.crypto_loader" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false">
+            <argument /> <!-- resource -->
+        </service>
+
+        <service id="mes_crypto.key_factory" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false">
+            <factory service="mes_crypto.crypto_loader" method="loadKey" />
+        </service>
+
+        <service id="mes_crypto.secret_factory" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false">
+            <factory service="mes_crypto.crypto_loader" method="loadSecret" />
+        </service>
+
+        <!-- Decorators -->
+        <service id="mes_crypto.key_manager_wrapper" class="Mes\Security\CryptoBundle\KeyManagerWrapper" public="false"
+                 decorates="mes_crypto.key_manager.default">
+            <argument type="service" id="mes_crypto.key_manager_wrapper.inner"/>
+        </service>
+
+        <service id="mes_crypto.encryption_wrapper" class="Mes\Security\CryptoBundle\EncryptionWrapper" public="false"
+                 decorates="mes_crypto.encryption">
+            <argument type="service" id="mes_crypto.encryption_wrapper.inner"/>
+        </service>
+
+        <!-- Private Aliases -->
+        <service id="mes_crypto.key_storage" alias="mes_crypto.key_storage.default" public="false" />
+
+        <service id="mes_crypto.key_generator" alias="mes_crypto.key_generator.default" public="false" />
+
+        <!-- Public Aliases -->
+        <service id="mes_crypto.key_manager" alias="mes_crypto.key_manager.default" />
+
+        <service id="mes_crypto.encryption" alias="mes_crypto.encryption.default" />
+    </services>
+
+</container>

@@ -1,0 +1,30 @@
+{
+    "name": "carteni/crypto-bundle",
+    "type": "symfony-bundle",
+    "description": "Integrates the \"Authenticated Secret-Key Encryption\" feature in a symfony project.",
+    "keywords": ["security", "encryption", "AES", "openssl", "cipher", "cryptography", "symmetric key cryptography", "crypto", "encrypt", "authenticated encryption"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Francesco Cartenì",
+            "email": "info@multimediaexperiencestudio.it"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Mes\\Security\\CryptoBundle\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "require": {
+        "php": "^5.5.9 || ^7.0",
+        "symfony/framework-bundle": "3.0",
+        "defuse/php-encryption": "^2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^1.11",
+        "symfony/console": "^3.0",
+        "symfony/phpunit-bridge": "^3.0",
+        "phpunit/phpunit": "~4.8|~5.0"
+    }
+}

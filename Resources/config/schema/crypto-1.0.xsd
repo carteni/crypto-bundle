@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns="http://multimediaexperiencestudio.it/schema/dic/crypto"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://multimediaexperiencestudio.it/schema/dic/crypto"
+            elementFormDefault="qualified">
+
+    <xsd:element name="config" type="config" />
+
+    <xsd:complexType name="config">
+        <xsd:attribute name="key" type="xsd:string" />
+        <xsd:attribute name="secret" type="xsd:string" />
+        <xsd:attribute name="external-secret" type="xsd:boolean" />
+        <xsd:attribute name="key-generator" type="xsd:string" />
+        <xsd:attribute name="key-storage" type="xsd:string" />
+        <xsd:attribute name="encryption" type="xsd:string" />
+    </xsd:complexType>
+
+</xsd:schema>
