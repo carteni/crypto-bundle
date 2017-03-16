@@ -190,7 +190,6 @@ EOT
             $options['secret'] ?: '',
         ));
 
-        //if (OutputInterface::VERBOSITY_DEBUG === $output->getVerbosity()) {
         if ($output->isDebug()) {
 
             /**

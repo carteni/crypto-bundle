@@ -37,3 +37,6 @@ install: composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
 
 script:
  - make $TARGET
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover

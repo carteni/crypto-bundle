@@ -44,7 +44,7 @@ class MesCryptoExtension extends ConfigurableExtension
     }
 
     /**
-     * @return string
+     * @return string|bool
      */
     public function getXsdValidationBasePath()
     {
