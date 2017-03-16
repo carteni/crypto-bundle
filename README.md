@@ -8,7 +8,7 @@ The aim of **MesCryptoBundle** is to facilitate **symmetric-key authenticated en
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/56cfd840-dedf-45a4-b35f-520168d8b7df/mini.png)](https://insight.sensiolabs.com/projects/56cfd840-dedf-45a4-b35f-520168d8b7df)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/56cfd840-dedf-45a4-b35f-520168d8b7df/small.png)](https://insight.sensiolabs.com/projects/56cfd840-dedf-45a4-b35f-520168d8b7df)
 [![Latest Stable Version](https://poser.pugx.org/carteni/crypto-bundle/v/stable.png)][1]
 [![License](https://poser.pugx.org/carteni/crypto-bundle/license)][1]
 
