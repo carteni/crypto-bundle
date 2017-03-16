@@ -5,9 +5,7 @@
 The aim of **MesCryptoBundle** is to facilitate **symmetric-key authenticated encryption** in a Symfony application.
 
 [![Build Status](https://travis-ci.org/Carteni/crypto-bundle.svg?branch=master)][2]
-[![Code Coverage](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/badges/coverage.png?b=master)][8]
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Carteni/crypto-bundle/badges/quality-score.png?b=master)][8]
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/56cfd840-dedf-45a4-b35f-520168d8b7df/mini.png)][7]
 [![Latest Stable Version](https://poser.pugx.org/carteni/crypto-bundle/v/stable.png)][1]
 [![License](https://poser.pugx.org/carteni/crypto-bundle/license)][1]
 
