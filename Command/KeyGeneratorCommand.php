@@ -135,7 +135,7 @@ EOF
         $encodedKey = $keyGenerator->generate($secret)
                                    ->getEncoded();
 
-        $this->log($logger, "The encoded key has been generated with the following sequence: {$encodedKey}\n", LogLevel::INFO);
+        $this->log($logger, "The encoded key has been generated with the following sequence:\n{$encodedKey}\n", LogLevel::INFO);
 
         if (null !== $dir) {
             $secretLine = null;
@@ -154,6 +154,7 @@ key = $encodedKey
 $secretLine
 EOT
             );
+            $f->chmod($dir, 0440);
 
             $this->log($logger, "The encoded key saved in {$dir}\n", LogLevel::INFO);
         }
@@ -190,7 +191,7 @@ EOT
             $options['secret'] ?: '',
         ));
 
-        if ($output->isDebug()) {
+        if (!empty($options['dir']) && $output->isDebug()) {
 
             /**
              * @var DebugFormatterHelper
