@@ -17,6 +17,8 @@ branches:
   only:
     - master
     - /^\d+\.\d+$/
+    - /^\d+\.\d+$/
+    - /^\d+\.x$/
 
 env:
   global:
