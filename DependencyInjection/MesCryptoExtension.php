@@ -38,7 +38,7 @@ class MesCryptoExtension extends ConfigurableExtension
     /**
      * @codeCoverageIgnore
      *
-     * {@inheritdoc}
+     * @return string
      */
     public function getNamespace()
     {
