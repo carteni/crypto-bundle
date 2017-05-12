@@ -85,7 +85,6 @@ Example 2 (Image Encryption)
 ----------------------------
 
 ```php
-```php
 namespace AppBundle\Controller;
 
 use Mes\Security\CryptoBundle\Exception\CryptoException;
