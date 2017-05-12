@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1.0 (2017-05-xx)
+1.1.0 (2017-05-12)
 ------------------
 * Added ability to encrypt files:
     - `EncryptionInterface::encryptFile`
