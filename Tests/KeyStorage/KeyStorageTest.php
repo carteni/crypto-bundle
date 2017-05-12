@@ -26,6 +26,16 @@ class KeyStorageTest extends \PHPUnit_Framework_TestCase
      */
     private $keyStorage;
 
+    protected function setUp()
+    {
+        $this->keyStorage = new KeyStorage();
+    }
+
+    protected function tearDown()
+    {
+        $this->keyStorage = null;
+    }
+
     public function testSetKeyStoresKey()
     {
         $secret = 'ThisIsASecret';
@@ -37,15 +47,5 @@ class KeyStorageTest extends \PHPUnit_Framework_TestCase
                                                                                          ->getRawKey());
         $this->assertSame($secret, $this->keyStorage->getKey()
                                                     ->getSecret());
-    }
-
-    protected function setUp()
-    {
-        $this->keyStorage = new KeyStorage();
-    }
-
-    protected function tearDown()
-    {
-        $this->keyStorage = null;
     }
 }

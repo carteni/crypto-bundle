@@ -39,6 +39,22 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $helper;
 
+    protected function setUp()
+    {
+        $application = new Application();
+        $application->add(new KeyGeneratorCommand());
+        $this->command = $application->find('mes:crypto:generate-key');
+        $this->helper = $this->command->getHelper('question');
+        $this->commandTester = new CommandTester($this->command);
+    }
+
+    protected function tearDown()
+    {
+        $this->commandTester = null;
+        $this->command = null;
+        $this->helper = null;
+    }
+
     /**
      * @group legacy
      */
@@ -119,22 +135,11 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $statusCode, 'Returns 0 in case of success');
     }
 
-    protected function setUp()
-    {
-        $application = new Application();
-        $application->add(new KeyGeneratorCommand());
-        $this->command = $application->find('mes:crypto:generate-key');
-        $this->helper = $this->command->getHelper('question');
-        $this->commandTester = new CommandTester($this->command);
-    }
-
-    protected function tearDown()
-    {
-        $this->commandTester = null;
-        $this->command = null;
-        $this->helper = null;
-    }
-
+    /**
+     * @param $input
+     *
+     * @return resource
+     */
     private function getInputStream($input)
     {
         $stream = fopen('php://memory', 'r+', false);

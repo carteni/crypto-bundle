@@ -19,20 +19,40 @@ use Mes\Security\CryptoBundle\Model\KeyInterface;
 interface EncryptionInterface
 {
     /**
-     * Encrypts a string with a Key.
+     * Encrypts a plaintext string using a secret key.
      *
-     * @param string       $plaintext
-     * @param KeyInterface $key
+     * @param string       $plaintext String to encrypt
+     * @param KeyInterface $key       Instance of KeyInterface containing the secret key for encryption
      *
      * @return string
      */
     public function encrypt($plaintext, KeyInterface $key);
 
     /**
-     * @param string            $ciphertext
-     * @param KeyInterface|null $key
+     * Decrypts a ciphertext string using a secret key.
+     *
+     * @param string            $ciphertext ciphertext to be decrypted
+     * @param KeyInterface|null $key        Instance of KeyInterface containing the secret key for decryption
      *
      * @return string
      */
     public function decrypt($ciphertext, KeyInterface $key);
+
+    /**
+     * Encrypts a file using a secret key.
+     *
+     * @param string       $inputFilename  Path to a file containing the plaintext to encrypt
+     * @param string       $outputFilename Path to save the ciphertext file
+     * @param KeyInterface $key            Instance of KeyInterface containing the secret key for encryption
+     */
+    public function encryptFile($inputFilename, $outputFilename, KeyInterface $key);
+
+    /**
+     * Decrypts a file using a secret key.
+     *
+     * @param string       $inputFilename  Path to a file containing the ciphertext to decrypt
+     * @param string       $outputFilename Path to save the decrypted plaintext file
+     * @param KeyInterface $key            Instance of KeyInterface containing the secret key for encryption
+     */
+    public function decryptFile($inputFilename, $outputFilename, KeyInterface $key);
 }

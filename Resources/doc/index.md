@@ -14,3 +14,5 @@ Decryption
 ### [Installation](./installation.md)
 
 ### [Examples](./examples.md)
+
+### [Examples with file encryption](./examples_with_file.md)

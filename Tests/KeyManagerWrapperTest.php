@@ -33,6 +33,18 @@ class KeyManagerWrapperTest extends \PHPUnit_Framework_TestCase
      */
     private $keyManager;
 
+    protected function setUp()
+    {
+        $this->keyManager = $this->getMockBuilder('\Mes\Security\CryptoBundle\KeyManagerInterface')
+                                 ->getMock();
+        $this->wrapper = new KeyManagerWrapper($this->keyManager);
+    }
+
+    protected function tearDown()
+    {
+        $this->wrapper = null;
+    }
+
     public function testGenerateCreatesKey()
     {
         $this->keyManager->expects($this->once())
@@ -135,17 +147,5 @@ class KeyManagerWrapperTest extends \PHPUnit_Framework_TestCase
         $secret = $this->wrapper->getSecret();
 
         $this->assertSame('ThisIsYourSecret', $secret);
-    }
-
-    protected function setUp()
-    {
-        $this->keyManager = $this->getMockBuilder('\Mes\Security\CryptoBundle\KeyManagerInterface')
-                                 ->getMock();
-        $this->wrapper = new KeyManagerWrapper($this->keyManager);
-    }
-
-    protected function tearDown()
-    {
-        $this->wrapper = null;
     }
 }

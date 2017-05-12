@@ -1,0 +1,4 @@
+.* export-ignore
+*.md export-ignore
+Tests/* export-ignore
+Resources/doc* linguist-documentation

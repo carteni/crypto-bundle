@@ -12,6 +12,7 @@
 namespace Mes\Security\CryptoBundle;
 
 use Defuse\Crypto\Crypto as BaseCrypto;
+use Defuse\Crypto\File as BaseCryptoFile;
 use Mes\Security\CryptoBundle\Model\Key;
 use Mes\Security\CryptoBundle\Model\KeyInterface;
 
@@ -39,6 +40,29 @@ final class Encryption extends AbstractEncryption
     public function decrypt($ciphertext, KeyInterface $key)
     {
         return BaseCrypto::decrypt($ciphertext, $this->unlockKey($key));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function encryptFile($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        BaseCryptoFile::encryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     */
+    public function decryptFile($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        BaseCryptoFile::decryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
     }
 
     /**

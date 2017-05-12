@@ -11,20 +11,9 @@
 
 namespace Mes\Security\CryptoBundle;
 
-use Mes\Security\CryptoBundle\Model\KeyInterface;
-
 /**
  * Class AbstractEncryption.
  */
 abstract class AbstractEncryption implements EncryptionInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function encrypt($plaintext, KeyInterface $key);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function decrypt($ciphertext, KeyInterface $key);
 }

@@ -31,6 +31,19 @@ class CryptoLoaderTest extends \PHPUnit_Framework_TestCase
 
     private $tempCryptoFile;
 
+    protected function setUp()
+    {
+        $this->loader = new CryptoLoader(__DIR__.'/../key.crypto');
+        $this->keyGenerator = new KeyGenerator();
+    }
+
+    protected function tearDown()
+    {
+        $this->loader = null;
+        $this->keyGenerator = null;
+        @unlink($this->tempCryptoFile);
+    }
+
     public function testLoadKeyLoadsEncodedKey()
     {
         $encodedKey = $this->loader->loadKey();
@@ -110,18 +123,5 @@ EOF
         fclose($handle);
 
         new CryptoLoader($this->tempCryptoFile);
-    }
-
-    protected function setUp()
-    {
-        $this->loader = new CryptoLoader(__DIR__.'/../key.crypto');
-        $this->keyGenerator = new KeyGenerator();
-    }
-
-    protected function tearDown()
-    {
-        $this->loader = null;
-        $this->keyGenerator = null;
-        @unlink($this->tempCryptoFile);
     }
 }

@@ -15,6 +15,7 @@ use Mes\Security\CryptoBundle\Encryption;
 use Mes\Security\CryptoBundle\EncryptionInterface;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface;
+use Mes\Security\CryptoBundle\Model\KeyInterface;
 
 /**
  * Class EncryptionTest.
@@ -31,6 +32,18 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
      */
     private $generator;
 
+    protected function setUp()
+    {
+        $this->encryption = new Encryption();
+        $this->generator = new KeyGenerator();
+    }
+
+    protected function tearDown()
+    {
+        $this->encryption = null;
+        $this->generator = null;
+    }
+
     /**
      * @return array
      */
@@ -42,7 +55,10 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(ctype_print($ciphertext), 'is printable');
 
-        return array('ciphertext' => $ciphertext, 'key_encoded' => $key->getEncoded());
+        return array(
+            'ciphertext' => $ciphertext,
+            'key_encoded' => $key->getEncoded(),
+        );
     }
 
     /**
@@ -101,7 +117,11 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(ctype_print($ciphertext), 'is printable');
         $this->assertTrue(ctype_print($key->getEncoded()), 'is printable');
 
-        return array('ciphertext' => $ciphertext, 'key_encoded' => $key->getEncoded(), 'secret' => $key->getSecret());
+        return array(
+            'ciphertext' => $ciphertext,
+            'key_encoded' => $key->getEncoded(),
+            'secret' => $key->getSecret(),
+        );
     }
 
     /**
@@ -163,15 +183,57 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
         $this->encryption->decrypt($args['ciphertext'].'{FakeString}', $keyFromAscii);
     }
 
-    protected function setUp()
+    /**
+     * @return array
+     */
+    public function testEncryptFileEncryptsFile()
     {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
+        /** @var KeyInterface $key */
+        $key = $this->generator->generate('CryptoSecret');
+
+        // Create file to encrypt.
+        $tmpfname = tempnam(__DIR__, 'CRYPTO_');
+        $plainContent = "Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.";
+        $handle = fopen($tmpfname, 'w');
+        fwrite($handle, $plainContent);
+        fclose($handle);
+
+        $filename = md5(uniqid());
+        $encryptedFilename = __DIR__."/ENCRYPTED_$filename.crypto";
+
+        $this->encryption->encryptFile($tmpfname, $encryptedFilename, $key);
+
+        $this->assertFileExists($encryptedFilename, sprintf('%s file must exists', $encryptedFilename));
+        $this->assertGreaterThan(0, (new \SplFileInfo($encryptedFilename))->getSize());
+
+        unlink($tmpfname);
+
+        return array(
+            'key' => $key->getEncoded(),
+            'secret' => $key->getSecret(),
+            'encryptedFile' => $encryptedFilename,
+        );
     }
 
-    protected function tearDown()
+    /**
+     * @depends testEncryptFileEncryptsFile
+     *
+     * @param $args
+     */
+    public function testDecryptFileDecryptsEncryptedFile($args)
     {
-        $this->encryption = null;
-        $this->generator = null;
+        /** @var KeyInterface $key */
+        $key = $this->generator->generateFromAscii($args['key'], $args['secret']);
+
+        $tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
+
+        $this->encryption->decryptFile($args['encryptedFile'], $tmpDecryptedFile, $key);
+
+        $this->assertFileExists($tmpDecryptedFile);
+        $this->assertGreaterThan(0, (new \SplFileInfo($tmpDecryptedFile))->getSize());
+        $this->assertContains("Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.", file_get_contents($tmpDecryptedFile));
+
+        unlink($tmpDecryptedFile);
+        unlink($args['encryptedFile']);
     }
 }

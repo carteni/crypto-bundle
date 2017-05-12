@@ -33,6 +33,24 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
      */
     private $keyManager;
 
+    protected function setUp()
+    {
+        $this->keyStorage = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyStorage\KeyStorageInterface')
+                                 ->getMock();
+
+        $this->keyGenerator = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface')
+                                   ->getMock();
+
+        $this->keyManager = new KeyManager($this->keyStorage, $this->keyGenerator);
+    }
+
+    protected function tearDown()
+    {
+        $this->keyGenerator = null;
+        $this->keyStorage = null;
+        $this->keyManager = null;
+    }
+
     public function testGenerateCreatesKey()
     {
         $this->keyGenerator->expects($this->once())
@@ -110,23 +128,5 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
         $this->keyManager->setSecret('ThisIsASecret');
 
         $this->assertSame('ThisIsASecret', $this->keyManager->getSecret());
-    }
-
-    protected function setUp()
-    {
-        $this->keyStorage = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyStorage\KeyStorageInterface')
-                                 ->getMock();
-
-        $this->keyGenerator = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface')
-                                   ->getMock();
-
-        $this->keyManager = new KeyManager($this->keyStorage, $this->keyGenerator);
-    }
-
-    protected function tearDown()
-    {
-        $this->keyGenerator = null;
-        $this->keyStorage = null;
-        $this->keyManager = null;
     }
 }

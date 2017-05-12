@@ -28,7 +28,7 @@ class MesCryptoExtension extends ConfigurableExtension
      * @param array            $config
      * @param ContainerBuilder $container
      *
-     * @return \Mes\Security\CryptoBundle\DependencyInjection\Configuration
+     * @return Configuration
      */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
@@ -36,6 +36,8 @@ class MesCryptoExtension extends ConfigurableExtension
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * {@inheritdoc}
      */
     public function getNamespace()
@@ -44,6 +46,8 @@ class MesCryptoExtension extends ConfigurableExtension
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return string|bool
      */
     public function getXsdValidationBasePath()
@@ -142,6 +146,10 @@ class MesCryptoExtension extends ConfigurableExtension
                                  'Defuse\Crypto\Key',
                                  'createNewRandomKey',
                              ));
+        }
+
+        if ($createRandomKey || (!$createRandomKey && !$keyIsExternal)) {
+            $container->removeDefinition('mes_crypto.crypto_loader');
         }
 
         $container->setDefinition('mes_crypto.raw_key', $rawKeyDefinition)

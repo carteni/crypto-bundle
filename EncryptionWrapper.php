@@ -58,4 +58,32 @@ final class EncryptionWrapper implements EncryptionInterface
             throw new CryptoException($ex->getMessage());
         }
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throw CryptoException
+     */
+    public function encryptFile($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        try {
+            $this->encryption->encryptFile($inputFilename, $outputFilename, $key);
+        } catch (BaseCryptoException $ex) {
+            throw new CryptoException($ex->getMessage());
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throw CryptoException
+     */
+    public function decryptFile($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        try {
+            $this->encryption->decryptFile($inputFilename, $outputFilename, $key);
+        } catch (BaseCryptoException $ex) {
+            throw new CryptoException($ex->getMessage());
+        }
+    }
 }

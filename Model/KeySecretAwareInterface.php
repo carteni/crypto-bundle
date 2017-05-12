@@ -26,7 +26,7 @@ interface KeySecretAwareInterface
     /**
      * Store the Key Secret.
      *
-     * @param $secret
+     * @param string $secret Key secret
      */
     public function setSecret($secret);
 }

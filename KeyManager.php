@@ -87,7 +87,7 @@ final class KeyManager implements KeyManagerInterface
     }
 
     /**
-     * @param $secret
+     * @param string $secret
      */
     public function setSecret($secret)
     {
