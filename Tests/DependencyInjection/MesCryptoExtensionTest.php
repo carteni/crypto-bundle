@@ -70,12 +70,12 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertHasDefinition('mes_crypto.raw_key');
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'Defuse\Crypto\KeyProtectedByPassword class is correct');
-        //$this->assertHasDefinition('mes_crypto.crypto_loader');
+        $this->assertHasDefinition('mes_crypto.crypto_loader');
 
         $keyResource = $this->configuration->findDefinition('mes_crypto.crypto_loader')
                                            ->getArgument(0);
 
-        $this->assertSame('/home/vagrant/key.crypto', $keyResource, '/home/vagrant/key.crypto');
+        $this->assertContains('key.crypto', $keyResource, sprintf('crypto file is %s', 'key.crypto'));
     }
 
     public function testContainerWithFullConfigWithExternalKey()
@@ -87,12 +87,12 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertHasDefinition('mes_crypto.raw_key');
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'Defuse\Crypto\KeyProtectedByPassword class is correct');
-        //$this->assertHasDefinition('mes_crypto.crypto_loader');
+        $this->assertHasDefinition('mes_crypto.crypto_loader');
 
         $keyResource = $this->configuration->findDefinition('mes_crypto.crypto_loader')
                                            ->getArgument(0);
 
-        $this->assertSame('/home/vagrant/key.crypto', $keyResource, '/home/vagrant/key.crypto');
+        $this->assertContains('key.crypto', $keyResource, sprintf('crypto file is %s', 'key.crypto'));
 
         $this->assertSame('custom_key_storage_service', (string) $this->configuration->getAlias('mes_crypto.key_storage'), 'custom_key_storage_service is correct alias');
         $this->assertSame('custom_key_generator_service', (string) $this->configuration->getAlias('mes_crypto.key_generator'), 'custom_key_generator_service is correct alias');
@@ -152,8 +152,9 @@ EOF;
      */
     private function getConfigWithExternalKey()
     {
-        $yaml = <<<'EOF'
-key: /home/vagrant/key.crypto
+        $cryptoFile = dirname(__DIR__).'/key.crypto';
+        $yaml = <<<EOF
+key: $cryptoFile
 external_secret: true
 EOF;
 
@@ -167,8 +168,9 @@ EOF;
      */
     private function getFullConfigWithExternalKey()
     {
-        $yaml = <<<'EOF'
-key: /home/vagrant/key.crypto
+        $cryptoFile = dirname(__DIR__).'/key.crypto';
+        $yaml = <<<EOF
+key: $cryptoFile
 external_secret: true
 key_storage: custom_key_storage_service
 key_generator: custom_key_generator_service
