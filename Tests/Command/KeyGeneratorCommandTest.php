@@ -12,6 +12,7 @@
 namespace Mes\Security\CryptoBundle\Tests\Command;
 
 use Mes\Security\CryptoBundle\Command\KeyGeneratorCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -22,7 +23,7 @@ use Symfony\Component\Process\Process;
 /**
  * Class KeyGeneratorCommandTest.
  */
-class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
+class KeyGeneratorCommandTest extends TestCase
 {
     /**
      * @var CommandTester
@@ -39,42 +40,15 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $helper;
 
-    protected function setUp()
-    {
-        $application = new Application();
-        $application->add(new KeyGeneratorCommand());
-        $this->command = $application->find('mes:crypto:generate-key');
-        $this->helper = $this->command->getHelper('question');
-        $this->commandTester = new CommandTester($this->command);
-    }
-
-    protected function tearDown()
-    {
-        $this->commandTester = null;
-        $this->command = null;
-        $this->helper = null;
-    }
-
-    /**
-     * @group legacy
-     */
     public function testExecuteGeneratesKeySavedInDirAndWithAuthenticationSecret()
     {
-        $this->helper->setInputStream($this->getInputStream(array(
-            'yes',
-            'ThisIsASecret',
-            'yes',
-            'yes',
-        )));
-
-        // Symfony 3.2+
-        /*$this->commandTester->setInputs(array(
+        $this->commandTester->setInputs(array(
             'yes',
             'ThisIsASecret',
             // "\n" for <Enter>
             'yes',
             'yes',
-        ));*/
+        ));
 
         $this->commandTester->execute(array(
             'command' => $this->command->getName(),
@@ -92,19 +66,16 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('#secret = ThisIsASecret$#', $process->getOutput());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     *
-     * @group legacy
-     */
     public function testInteractThrowsException()
     {
+        $this->expectException(\RuntimeException::class);
+
         // http://daleswanson.org/ascii.htm
-        $this->helper->setInputStream($this->getInputStream(array(
+        $this->commandTester->setInputs(array(
             'yes',
             "\x09\x11",
             "\n",
-        )));
+        ));
 
         $this->commandTester->execute(array(
             'command' => $this->command->getName(),
@@ -113,16 +84,13 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    /**
-     * @group legacy
-     */
     public function testExecuteAborted()
     {
-        $this->helper->setInputStream($this->getInputStream(array(
+        $this->commandTester->setInputs(array(
             'yes',
             'ThisIsSecret',
             'no',
-        )));
+        ));
 
         $this->commandTester->execute(array(
             'command' => $this->command->getName(),
@@ -135,17 +103,19 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $statusCode, 'Returns 0 in case of success');
     }
 
-    /**
-     * @param $input
-     *
-     * @return resource
-     */
-    private function getInputStream($input)
+    protected function setUp()
     {
-        $stream = fopen('php://memory', 'r+', false);
-        fputs($stream, implode(PHP_EOL, $input));
-        rewind($stream);
+        $application = new Application();
+        $application->add(new KeyGeneratorCommand());
+        $this->command = $application->find('mes:crypto:generate-key');
+        $this->helper = $this->command->getHelper('question');
+        $this->commandTester = new CommandTester($this->command);
+    }
 
-        return $stream;
+    protected function tearDown()
+    {
+        $this->commandTester = null;
+        $this->command = null;
+        $this->helper = null;
     }
 }

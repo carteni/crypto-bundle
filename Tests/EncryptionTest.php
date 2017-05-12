@@ -16,11 +16,12 @@ use Mes\Security\CryptoBundle\EncryptionInterface;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface;
 use Mes\Security\CryptoBundle\Model\KeyInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class EncryptionTest.
  */
-class EncryptionTest extends \PHPUnit_Framework_TestCase
+class EncryptionTest extends TestCase
 {
     /**
      * @var EncryptionInterface
@@ -31,18 +32,6 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
      * @var KeyGeneratorInterface
      */
     private $generator;
-
-    protected function setUp()
-    {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
-    }
-
-    protected function tearDown()
-    {
-        $this->encryption = null;
-        $this->generator = null;
-    }
 
     /**
      * @return array
@@ -235,5 +224,17 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
 
         unlink($tmpDecryptedFile);
         unlink($args['encryptedFile']);
+    }
+
+    protected function setUp()
+    {
+        $this->encryption = new Encryption();
+        $this->generator = new KeyGenerator();
+    }
+
+    protected function tearDown()
+    {
+        $this->encryption = null;
+        $this->generator = null;
     }
 }
