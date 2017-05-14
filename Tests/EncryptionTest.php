@@ -23,218 +23,218 @@ use PHPUnit\Framework\TestCase;
  */
 class EncryptionTest extends TestCase
 {
-    /**
-     * @var EncryptionInterface
-     */
-    private $encryption;
+	/**
+	 * @var EncryptionInterface
+	 */
+	private $encryption;
 
-    /**
-     * @var KeyGeneratorInterface
-     */
-    private $generator;
+	/**
+	 * @var KeyGeneratorInterface
+	 */
+	private $generator;
 
-    /**
-     * @return array
-     */
-    public function testEncryptEncryptsPlaintext()
-    {
-        $key = $this->generator->generate();
-        $plaintext = 'The quick brown fox jumps over the lazy dog';
-        $ciphertext = $this->encryption->encrypt($plaintext, $key);
+	protected function setUp()
+	{
+		$this->encryption = new Encryption();
+		$this->generator = new KeyGenerator();
+	}
 
-        $this->assertTrue(ctype_print($ciphertext), 'is printable');
+	protected function tearDown()
+	{
+		$this->encryption = null;
+		$this->generator = null;
+	}
 
-        return array(
-            'ciphertext' => $ciphertext,
-            'key_encoded' => $key->getEncoded(),
-        );
-    }
+	/**
+	 * @return array
+	 */
+	public function testEncryptWithKeyEncryptsPlaintext()
+	{
+		$key = $this->generator->generate();
+		$plaintext = 'The quick brown fox jumps over the lazy dog';
+		$ciphertext = $this->encryption->encryptWithKey($plaintext, $key);
 
-    /**
-     * @depends testEncryptEncryptsPlaintext
-     *
-     * @param $args
-     */
-    public function testDecryptDecryptsCiphertext($args)
-    {
-        $key = $this->generator->generateFromAscii($args['key_encoded']);
-        $plaintext = $this->encryption->decrypt($args['ciphertext'], $key);
+		$this->assertTrue(ctype_print($ciphertext), 'is printable');
 
-        $this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext);
-    }
+		return array(
+			'ciphertext'  => $ciphertext,
+			'key_encoded' => $key->getEncoded(),
+		);
+	}
 
-    /**
-     * @depends testEncryptEncryptsPlaintext
-     *
-     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionBecauseCiphertextIsCorrupted($args)
-    {
-        $key = $this->generator->generateFromAscii($args['key_encoded']);
-        $this->encryption->decrypt($args['ciphertext'].'{FakeString}', $key);
-    }
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintext
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyDecryptsCiphertext($args)
+	{
+		$key = $this->generator->generateFromAscii($args['key_encoded']);
+		$plaintext = $this->encryption->decryptWithKey($args['ciphertext'], $key);
 
-    /**
-     * @depends testEncryptEncryptsPlaintext
-     *
-     * @expectedException \Defuse\Crypto\Exception\BadFormatException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionBecauseKeyIsCorrupted($args)
-    {
-        $key = $this->generator->generateFromAscii($args['key_encoded'].'{FakeString}');
-        $this->encryption->decrypt($args['ciphertext'], $key);
-    }
+		$this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext);
+	}
 
-    /**
-     * @return array
-     */
-    public function testEncryptEncryptsPlaintextWithPassword()
-    {
-        $key = $this->generator->generate('ThisIsASecretPassword');
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintext
+	 *
+	 * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+	 *
+	 * @param $args
+	 */
+	public function testDecryptThrowsExceptionBecauseCiphertextIsCorrupted($args)
+	{
+		$key = $this->generator->generateFromAscii($args['key_encoded']);
+		$this->encryption->decryptWithKey($args['ciphertext'] . '{FakeString}', $key);
+	}
 
-        $this->assertInstanceOf('\Defuse\Crypto\KeyProtectedByPassword', $key->getRawKey());
-        $this->assertSame('ThisIsASecretPassword', $key->getSecret());
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintext
+	 *
+	 * @expectedException \Defuse\Crypto\Exception\BadFormatException
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyThrowsExceptionBecauseKeyIsCorrupted($args)
+	{
+		$key = $this->generator->generateFromAscii($args['key_encoded'] . '{FakeString}');
+		$this->encryption->decryptWithKey($args['ciphertext'], $key);
+	}
 
-        $plaintext = 'The quick brown fox jumps over the lazy dog';
-        $ciphertext = $this->encryption->encrypt($plaintext, $key);
+	/**
+	 * @return array
+	 */
+	public function testEncryptWithKeyEncryptsPlaintextWithPassword()
+	{
+		$key = $this->generator->generate('ThisIsASecretPassword');
 
-        $this->assertInstanceOf('\Defuse\Crypto\Key', $key->getRawKey());
-        $this->assertTrue(ctype_print($ciphertext), 'is printable');
-        $this->assertTrue(ctype_print($key->getEncoded()), 'is printable');
+		$this->assertInstanceOf('\Defuse\Crypto\KeyProtectedByPassword', $key->getRawKey());
+		$this->assertSame('ThisIsASecretPassword', $key->getSecret());
 
-        return array(
-            'ciphertext' => $ciphertext,
-            'key_encoded' => $key->getEncoded(),
-            'secret' => $key->getSecret(),
-        );
-    }
+		$plaintext = 'The quick brown fox jumps over the lazy dog';
+		$ciphertext = $this->encryption->encryptWithKey($plaintext, $key);
 
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @param $args
-     */
-    public function testDecryptDecryptsCiphertextWithPassword($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret']);
+		$this->assertInstanceOf('\Defuse\Crypto\Key', $key->getRawKey());
+		$this->assertTrue(ctype_print($ciphertext), 'is printable');
+		$this->assertTrue(ctype_print($key->getEncoded()), 'is printable');
 
-        $this->assertInstanceOf('\Defuse\Crypto\KeyProtectedByPassword', $keyFromAscii->getRawKey());
-        $this->assertSame($args['secret'], $keyFromAscii->getSecret());
+		return array(
+			'ciphertext'  => $ciphertext,
+			'key_encoded' => $key->getEncoded(),
+			'secret'      => $key->getSecret(),
+		);
+	}
 
-        $plaintext = $this->encryption->decrypt($args['ciphertext'], $keyFromAscii);
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyDecryptsCiphertextWithPassword($args)
+	{
+		$keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret']);
 
-        $this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext);
-    }
+		$this->assertInstanceOf('\Defuse\Crypto\KeyProtectedByPassword', $keyFromAscii->getRawKey());
+		$this->assertSame($args['secret'], $keyFromAscii->getSecret());
 
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionWithCiphertextWithPasswordBecauseSecretIsCorrupted($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret'].'{FakeString}');
+		$plaintext = $this->encryption->decryptWithKey($args['ciphertext'], $keyFromAscii);
 
-        $this->encryption->decrypt($args['ciphertext'], $keyFromAscii);
-    }
+		$this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext);
+	}
 
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @expectedException \Defuse\Crypto\Exception\BadFormatException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionWithCiphertextWithPasswordBecauseKeyIsCorrupted($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'].'{FakeString}', $args['secret']);
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
+	 *
+	 * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyThrowsExceptionWithCiphertextWithPasswordBecauseSecretIsCorrupted($args)
+	{
+		$keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret'] . '{FakeString}');
 
-        $this->encryption->decrypt($args['ciphertext'], $keyFromAscii);
-    }
+		$this->encryption->decryptWithKey($args['ciphertext'], $keyFromAscii);
+	}
 
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionWithCiphertextWithPasswordBecauseCiphertextIsCorrupted($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret']);
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
+	 *
+	 * @expectedException \Defuse\Crypto\Exception\BadFormatException
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyThrowsExceptionWithCiphertextWithPasswordBecauseKeyIsCorrupted($args)
+	{
+		$keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'] . '{FakeString}', $args['secret']);
 
-        $this->encryption->decrypt($args['ciphertext'].'{FakeString}', $keyFromAscii);
-    }
+		$this->encryption->decryptWithKey($args['ciphertext'], $keyFromAscii);
+	}
 
-    /**
-     * @return array
-     */
-    public function testEncryptFileEncryptsFile()
-    {
-        /** @var KeyInterface $key */
-        $key = $this->generator->generate('CryptoSecret');
+	/**
+	 * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
+	 *
+	 * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyThrowsExceptionWithCiphertextWithPasswordBecauseCiphertextIsCorrupted($args)
+	{
+		$keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret']);
 
-        // Create file to encrypt.
-        $tmpfname = tempnam(__DIR__, 'CRYPTO_');
-        $plainContent = "Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.";
-        $handle = fopen($tmpfname, 'w');
-        fwrite($handle, $plainContent);
-        fclose($handle);
+		$this->encryption->decryptWithKey($args['ciphertext'] . '{FakeString}', $keyFromAscii);
+	}
 
-        $filename = md5(uniqid());
-        $encryptedFilename = __DIR__."/ENCRYPTED_$filename.crypto";
+	/**
+	 * @return array
+	 */
+	public function testEncryptWithKeyFileEncryptsFile()
+	{
+		/** @var KeyInterface $key */
+		$key = $this->generator->generate('CryptoSecret');
 
-        $this->encryption->encryptFile($tmpfname, $encryptedFilename, $key);
+		// Create file to encrypt.
+		$tmpfname = tempnam(__DIR__, 'CRYPTO_');
+		$plainContent = "Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.";
+		$handle = fopen($tmpfname, 'w');
+		fwrite($handle, $plainContent);
+		fclose($handle);
 
-        $this->assertFileExists($encryptedFilename, sprintf('%s file must exists', $encryptedFilename));
-        $this->assertGreaterThan(0, (new \SplFileInfo($encryptedFilename))->getSize());
+		$filename = md5(uniqid());
+		$encryptedFilename = __DIR__ . "/ENCRYPTED_$filename.crypto";
 
-        unlink($tmpfname);
+		$this->encryption->encryptFileWithKey($tmpfname, $encryptedFilename, $key);
 
-        return array(
-            'key' => $key->getEncoded(),
-            'secret' => $key->getSecret(),
-            'encryptedFile' => $encryptedFilename,
-        );
-    }
+		$this->assertFileExists($encryptedFilename, sprintf('%s file must exists', $encryptedFilename));
+		$this->assertGreaterThan(0, (new \SplFileInfo($encryptedFilename))->getSize());
 
-    /**
-     * @depends testEncryptFileEncryptsFile
-     *
-     * @param $args
-     */
-    public function testDecryptFileDecryptsEncryptedFile($args)
-    {
-        /** @var KeyInterface $key */
-        $key = $this->generator->generateFromAscii($args['key'], $args['secret']);
+		unlink($tmpfname);
 
-        $tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
+		return array(
+			'key'           => $key->getEncoded(),
+			'secret'        => $key->getSecret(),
+			'encryptedFile' => $encryptedFilename,
+		);
+	}
 
-        $this->encryption->decryptFile($args['encryptedFile'], $tmpDecryptedFile, $key);
+	/**
+	 * @depends testEncryptWithKeyFileEncryptsFile
+	 *
+	 * @param $args
+	 */
+	public function testDecryptWithKeyFileDecryptsEncryptedFile($args)
+	{
+		/** @var KeyInterface $key */
+		$key = $this->generator->generateFromAscii($args['key'], $args['secret']);
 
-        $this->assertFileExists($tmpDecryptedFile);
-        $this->assertGreaterThan(0, (new \SplFileInfo($tmpDecryptedFile))->getSize());
-        $this->assertContains("Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.", file_get_contents($tmpDecryptedFile));
+		$tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
 
-        unlink($tmpDecryptedFile);
-        unlink($args['encryptedFile']);
-    }
+		$this->encryption->decryptFileWithKey($args['encryptedFile'], $tmpDecryptedFile, $key);
 
-    protected function setUp()
-    {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
-    }
+		$this->assertFileExists($tmpDecryptedFile);
+		$this->assertGreaterThan(0, (new \SplFileInfo($tmpDecryptedFile))->getSize());
+		$this->assertContains("Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.", file_get_contents($tmpDecryptedFile));
 
-    protected function tearDown()
-    {
-        $this->encryption = null;
-        $this->generator = null;
-    }
+		unlink($tmpDecryptedFile);
+		unlink($args['encryptedFile']);
+	}
 }
