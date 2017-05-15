@@ -16,18 +16,4 @@ namespace Mes\Security\CryptoBundle\Model;
  */
 abstract class AbstractKey implements KeyInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getEncoded();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getSecret();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function setSecret($secret);
 }

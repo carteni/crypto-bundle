@@ -38,7 +38,7 @@ final class Key extends AbstractKey
      * Key constructor.
      *
      * @param BaseKey|BaseKeyProtectedByPassword $rawKey
-     * @param $secret
+     * @param $secret string The secret to make the Key for encryption
      */
     private function __construct($rawKey, $secret)
     {
@@ -51,7 +51,7 @@ final class Key extends AbstractKey
      * @internal
      *
      * @param BaseKey|BaseKeyProtectedByPassword $rawKey
-     * @param $secret
+     * @param string                             $secret The secret to make the Key for encryption
      *
      * @return KeyInterface
      */

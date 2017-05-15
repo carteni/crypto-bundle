@@ -16,11 +16,10 @@ namespace Mes\Security\CryptoBundle\Model;
  */
 interface KeyInterface extends KeySecretAwareInterface
 {
-    /**
-     * Encodes the Key into a string of printable ASCII
-     * characters.
-     *
-     * @return string
-     */
-    public function getEncoded();
+	/**
+	 * Encodes the KeyInterface instance into a string of printable ASCII characters.
+	 *
+	 * @return string A string of printable ASCII characters representing this KeyInterface instance
+	 */
+	public function getEncoded();
 }

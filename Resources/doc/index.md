@@ -11,6 +11,12 @@ Decryption
 ----------
 **Decryption** is the process of taking encoded or encrypted text or other data and converting it back into text that you or the computer can read and understand. This term could be used to describe a method of un-encrypting the data manually or with un-encrypting the data using the proper codes or keys.
 
+- [Encryption Interface](./../../EncryptionInterface.php)
+
+- [KeyGenerator Interface](./../../KeyGenerator/KeyGeneratorInterface.php)
+
+- [Key Interface](./../../Model/KeyInterface.php)
+
 ### [Installation](./installation.md)
 
 ### [Examples](./examples.md)
