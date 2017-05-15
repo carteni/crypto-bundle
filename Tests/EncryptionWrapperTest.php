@@ -33,6 +33,19 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
 	 */
 	private $encryption;
 
+	protected function setUp()
+	{
+		$this->encryption = $this->getMockBuilder('Mes\Security\CryptoBundle\EncryptionInterface')
+								 ->getMock();
+		$this->wrapper = new EncryptionWrapper($this->encryption);
+	}
+
+	protected function tearDown()
+	{
+		$this->wrapper = null;
+		$this->encryption = null;
+	}
+
 	/**
 	 * @group legacy
 	 *
@@ -441,18 +454,4 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
 
 		$this->wrapper->decryptFileWithPassword(__DIR__ . '/file.crypto', __DIR__ . '/file.txt', 'SuperSecretPa$$word');
 	}
-
-	protected function setUp()
-	{
-		$this->encryption = $this->getMockBuilder('Mes\Security\CryptoBundle\EncryptionInterface')
-								 ->getMock();
-		$this->wrapper = new EncryptionWrapper($this->encryption);
-	}
-
-	protected function tearDown()
-	{
-		$this->wrapper = null;
-		$this->encryption = null;
-	}
-
 }
