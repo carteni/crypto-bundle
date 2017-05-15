@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1494845283">
-  <project timestamp="1494845283">
+<coverage generated="1494856533">
+  <project timestamp="1494856533">
     <package name="Mes\Security\CryptoBundle">
       <file name="/var/www/crypto-bundle/AbstractEncryption.php">
         <class name="AbstractEncryption" namespace="Mes\Security\CryptoBundle">
@@ -10,7 +10,7 @@
       </file>
       <file name="/var/www/crypto-bundle/Encryption.php">
         <class name="Encryption" namespace="Mes\Security\CryptoBundle">
-          <metrics complexity="9" methods="9" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="8" elements="21" coveredelements="13"/>
+          <metrics complexity="9" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="14" elements="23" coveredelements="23"/>
         </class>
         <line num="29" type="method" name="encryptWithKey" visibility="public" complexity="1" crap="1" count="2"/>
         <line num="31" type="stmt" count="2"/>
@@ -22,26 +22,28 @@
         <line num="63" type="method" name="decryptFileWithKey" visibility="public" complexity="1" crap="1" count="1"/>
         <line num="65" type="stmt" count="1"/>
         <line num="66" type="stmt" count="1"/>
-        <line num="76" type="method" name="encryptWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="79" type="stmt" count="0"/>
-        <line num="89" type="method" name="decryptWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="92" type="stmt" count="0"/>
-        <line num="101" type="method" name="encryptFileWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="104" type="stmt" count="0"/>
-        <line num="113" type="method" name="decryptFileWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="116" type="stmt" count="0"/>
-        <line num="123" type="method" name="unlockKey" visibility="private" complexity="1" crap="1" count="9"/>
-        <line num="125" type="stmt" count="9"/>
-        <line num="126" type="stmt" count="8"/>
-        <metrics loc="128" ncloc="50" classes="1" methods="9" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="8" elements="21" coveredelements="13"/>
+        <line num="73" type="method" name="encryptWithPassword" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="75" type="stmt" count="1"/>
+        <line num="84" type="method" name="decryptWithPassword" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="86" type="stmt" count="2"/>
+        <line num="95" type="method" name="encryptFileWithPassword" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="97" type="stmt" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="107" type="method" name="decryptFileWithPassword" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="109" type="stmt" count="2"/>
+        <line num="110" type="stmt" count="1"/>
+        <line num="117" type="method" name="unlockKey" visibility="private" complexity="1" crap="1" count="9"/>
+        <line num="119" type="stmt" count="9"/>
+        <line num="120" type="stmt" count="8"/>
+        <metrics loc="122" ncloc="58" classes="1" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="14" elements="23" coveredelements="23"/>
       </file>
       <file name="/var/www/crypto-bundle/EncryptionWrapper.php">
         <class name="EncryptionWrapper" namespace="Mes\Security\CryptoBundle">
-          <metrics complexity="13" methods="9" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="16" elements="29" coveredelements="21"/>
+          <metrics complexity="17" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="28" elements="37" coveredelements="37"/>
         </class>
-        <line num="34" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="8"/>
-        <line num="36" type="stmt" count="8"/>
-        <line num="37" type="stmt" count="8"/>
+        <line num="34" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="16"/>
+        <line num="36" type="stmt" count="16"/>
+        <line num="37" type="stmt" count="16"/>
         <line num="44" type="method" name="encryptWithKey" visibility="public" complexity="2" crap="2" count="2"/>
         <line num="47" type="stmt" count="2"/>
         <line num="48" type="stmt" count="1"/>
@@ -60,15 +62,23 @@
         <line num="90" type="stmt" count="1"/>
         <line num="91" type="stmt" count="1"/>
         <line num="93" type="stmt" count="1"/>
-        <line num="103" type="method" name="encryptWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="106" type="stmt" count="0"/>
-        <line num="116" type="method" name="decryptWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="119" type="stmt" count="0"/>
-        <line num="128" type="method" name="encryptFileWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="131" type="stmt" count="0"/>
-        <line num="140" type="method" name="decryptFileWithPassword" visibility="public" complexity="1" crap="2" count="0"/>
-        <line num="143" type="stmt" count="0"/>
-        <metrics loc="144" ncloc="67" classes="1" methods="9" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="16" elements="29" coveredelements="21"/>
+        <line num="100" type="method" name="encryptWithPassword" visibility="public" complexity="2" crap="2" count="2"/>
+        <line num="103" type="stmt" count="2"/>
+        <line num="104" type="stmt" count="1"/>
+        <line num="105" type="stmt" count="1"/>
+        <line num="114" type="method" name="decryptWithPassword" visibility="public" complexity="2" crap="2" count="2"/>
+        <line num="117" type="stmt" count="2"/>
+        <line num="118" type="stmt" count="1"/>
+        <line num="119" type="stmt" count="1"/>
+        <line num="128" type="method" name="encryptFileWithPassword" visibility="public" complexity="2" crap="2" count="2"/>
+        <line num="131" type="stmt" count="2"/>
+        <line num="132" type="stmt" count="1"/>
+        <line num="133" type="stmt" count="1"/>
+        <line num="142" type="method" name="decryptFileWithPassword" visibility="public" complexity="2" crap="2" count="2"/>
+        <line num="145" type="stmt" count="2"/>
+        <line num="146" type="stmt" count="1"/>
+        <line num="147" type="stmt" count="1"/>
+        <metrics loc="150" ncloc="91" classes="1" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="28" elements="37" coveredelements="37"/>
       </file>
       <file name="/var/www/crypto-bundle/KeyManager.php">
         <class name="KeyManager" namespace="Mes\Security\CryptoBundle">
@@ -489,9 +499,9 @@
     <package name="Mes\Security\CryptoBundle\KeyStorage">
       <file name="/var/www/crypto-bundle/KeyStorage/AbstractKeyStorage.php">
         <class name="AbstractKeyStorage" namespace="Mes\Security\CryptoBundle\KeyStorage">
-          <metrics complexity="2" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+          <metrics complexity="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
-        <metrics loc="30" ncloc="13" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        <metrics loc="19" ncloc="8" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
       <file name="/var/www/crypto-bundle/KeyStorage/KeyStorage.php">
         <class name="KeyStorage" namespace="Mes\Security\CryptoBundle\KeyStorage">
@@ -575,6 +585,6 @@
     <file name="/var/www/crypto-bundle/Model/KeySecretAwareInterface.php">
       <metrics loc="32" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <metrics files="25" loc="1980" ncloc="1088" classes="13" methods="75" coveredmethods="67" conditionals="0" coveredconditionals="0" statements="351" coveredstatements="343" elements="426" coveredelements="410"/>
+    <metrics files="25" loc="1969" ncloc="1115" classes="13" methods="75" coveredmethods="75" conditionals="0" coveredconditionals="0" statements="361" coveredstatements="361" elements="436" coveredelements="436"/>
   </project>
 </coverage>
