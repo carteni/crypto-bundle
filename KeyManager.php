@@ -35,6 +35,12 @@ final class KeyManager implements KeyManagerInterface
      */
     protected $secret;
 
+    /**
+     * KeyManager constructor.
+     *
+     * @param KeyStorageInterface   $keyStorage
+     * @param KeyGeneratorInterface $keyGenerator
+     */
     public function __construct(KeyStorageInterface $keyStorage, KeyGeneratorInterface $keyGenerator)
     {
         $this->keyStorage = $keyStorage;
@@ -79,7 +85,9 @@ final class KeyManager implements KeyManagerInterface
     }
 
     /**
-     * @return string
+     * Gets the secret string used to make the Key for encryption.
+     *
+     * @return string The secret string used to make the Key for encryption
      */
     public function getSecret()
     {
@@ -87,7 +95,9 @@ final class KeyManager implements KeyManagerInterface
     }
 
     /**
-     * @param string $secret
+     * Sets the secret string used to make the Key for encryption.
+     *
+     * @param string $secret The secret string used to make the Key for encryption
      */
     public function setSecret($secret)
     {

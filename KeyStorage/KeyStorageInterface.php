@@ -20,8 +20,7 @@ interface KeyStorageInterface
 {
     /**
      * Reads a stored Key.
-     * If key is null, a new Random Key without authentication secret is
-     * created and stored.
+     * If key is null, a new Random Key without authentication secret is created and stored.
      *
      * @return KeyInterface
      */

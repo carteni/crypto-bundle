@@ -17,14 +17,14 @@ namespace Mes\Security\CryptoBundle\Model;
 interface KeySecretAwareInterface
 {
     /**
-     * Reads the Key Secret.
+     * Returns the secret used to make te Key for encryption.
      *
-     * @return string
+     * @return string The
      */
     public function getSecret();
 
     /**
-     * Store the Key Secret.
+     * Sets the secret to make the Key for encryption.
      *
      * @param string $secret Key secret
      */

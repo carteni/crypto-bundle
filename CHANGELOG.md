@@ -1,7 +1,23 @@
 Changelog
 =========
 
-1.2.0 (2017-XX-XX)
+1.3.0 (2017-XX-XX)
+------------------
+* Added Encryption::encryptWithPassword
+* Added Encryption::decryptWithPassword
+* Added Encryption::encryptFileWithPassword
+* Added Encryption::decryptFileWithPassword
+* Added EncryptionWrapper::encryptWithPassword
+* Added EncryptionWrapper::decryptWithPassword
+* EncryptionWrapper::encryptFileWithPassword
+* EncryptionWrapper::decryptFileWithPassword
+
+This methods are intentionally slow, using a lot of CPU resources for a fraction of a second.
+They apply key stretching to the password in order to make password guessing attacks more computationally expensive.
+If you need a faster way to encrypt multiple ciphertexts under the same secret, see encryptWithKey, decryptWithKey,
+encryptFileWithKey, decryptFileWithKey and use a secret to generate the Key.
+
+1.2.0 (2017-14-05)
 ------------------
 * Deprecated Encryption::encrypt. Added Encryption::encryptWithKey
 * Deprecated Encryption::decrypt. Added Encryption::decryptWithKey

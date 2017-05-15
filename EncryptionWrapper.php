@@ -26,6 +26,11 @@ final class EncryptionWrapper implements EncryptionInterface
      */
     private $encryption;
 
+    /**
+     * EncryptionWrapper constructor.
+     *
+     * @param EncryptionInterface $encryption
+     */
     public function __construct(EncryptionInterface $encryption)
     {
         $this->encryption = $encryption;
@@ -85,5 +90,55 @@ final class EncryptionWrapper implements EncryptionInterface
         } catch (BaseCryptoException $ex) {
             throw new CryptoException($ex->getMessage());
         }
+    }
+
+    /**
+     * Encrypts a plaintext string using a secret password.
+     *
+     * @param string $plaintext String to encrypt
+     * @param string $password  String containing the secret password used for encryption
+     *
+     * @return string A ciphertext string representing $plaintext encrypted with a key derived from $password
+     */
+    public function encryptWithPassword($plaintext, $password)
+    {
+        // TODO: Implement encryptWithPassword() method.
+    }
+
+    /**
+     * Decrypts a ciphertext string using a secret password.
+     *
+     * @param string $ciphertext ciphertext to be decrypted
+     * @param string $password   A string containing the secret password used for decryption
+     *
+     * @return string If the decryption succeeds, returns a string containing the same value as the string that was passed to encrypt() when $ciphertext was produced
+     */
+    public function decryptWithPassword($ciphertext, $password)
+    {
+        // TODO: Implement decryptWithPassword() method.
+    }
+
+    /**
+     * Encrypts a file with a password.
+     *
+     * @param string $inputFilename  Path to a file containing the plaintext to encrypt
+     * @param string $outputFilename Path to save the ciphertext file
+     * @param string $password       The password used for decryption
+     */
+    public function encryptFileWithPassword($inputFilename, $outputFilename, $password)
+    {
+        // TODO: Implement encryptFileWithPassword() method.
+    }
+
+    /**
+     * Decrypts a file with a password.
+     *
+     * @param string $inputFilename  Path to a file containing the ciphertext to decrypt
+     * @param string $outputFilename Path to save the decrypted plaintext file
+     * @param string $password       The password used for decryption
+     */
+    public function decryptFileWithPassword($inputFilename, $outputFilename, $password)
+    {
+        // TODO: Implement decryptFileWithPassword() method.
     }
 }

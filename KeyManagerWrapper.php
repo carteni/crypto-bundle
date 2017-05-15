@@ -27,6 +27,11 @@ class KeyManagerWrapper implements KeyManagerInterface
      */
     private $keyManager;
 
+    /**
+     * KeyManagerWrapper constructor.
+     *
+     * @param KeyManagerInterface $keyManager
+     */
     public function __construct(KeyManagerInterface $keyManager)
     {
         $this->keyManager = $keyManager;
