@@ -40,7 +40,7 @@ class KeyManagerWrapper implements KeyManagerInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      */
     public function generate($secret = null)
     {
@@ -54,7 +54,7 @@ class KeyManagerWrapper implements KeyManagerInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      */
     public function generateFromAscii($key_encoded, $secret = null)
     {

@@ -39,7 +39,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      *
      * @deprecated since version 1.2, to be removed in 2.0. Use encryptWithKey instead
      */
@@ -57,7 +57,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      */
     public function encryptWithKey($plaintext, KeyInterface $key)
     {
@@ -71,7 +71,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      *
      * @deprecated since version 1.2, to be removed in 2.0. Use decryptWithKey instead
      */
@@ -89,7 +89,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      */
     public function decryptWithKey($ciphertext, KeyInterface $key)
     {
@@ -103,7 +103,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      *
      * @deprecated since version 1.2, to be removed in 2.0. Use encryptFileWithKey instead
      */
@@ -121,7 +121,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      */
     public function encryptFileWithKey($inputFilename, $outputFilename, KeyInterface $key)
     {
@@ -135,7 +135,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      *
      * @deprecated since version 1.2, to be removed in 2.0. Use decryptFileWithKey instead
      */
@@ -153,7 +153,7 @@ final class EncryptionWrapper implements EncryptionInterface
     /**
      * {@inheritdoc}
      *
-     * @throw CryptoException
+     * @throws CryptoException
      */
     public function decryptFileWithKey($inputFilename, $outputFilename, KeyInterface $key)
     {
@@ -165,52 +165,58 @@ final class EncryptionWrapper implements EncryptionInterface
     }
 
     /**
-     * Encrypts a plaintext string using a secret password.
+     * {@inheritdoc}
      *
-     * @param string $plaintext String to encrypt
-     * @param string $password  String containing the secret password used for encryption
-     *
-     * @return string A ciphertext string representing $plaintext encrypted with a key derived from $password
+     * @throws CryptoException
      */
     public function encryptWithPassword($plaintext, $password)
     {
-        // TODO: Implement encryptWithPassword() method.
+        try {
+            return $this->encryption->encryptWithPassword($plaintext, $password);
+        } catch (EnvironmentIsBrokenException $ex) {
+            throw new CryptoException($ex->getMessage());
+        }
     }
 
     /**
-     * Decrypts a ciphertext string using a secret password.
+     * {@inheritdoc}
      *
-     * @param string $ciphertext ciphertext to be decrypted
-     * @param string $password   A string containing the secret password used for decryption
-     *
-     * @return string If the decryption succeeds, returns a string containing the same value as the string that was passed to encrypt() when $ciphertext was produced
+     * @throws CryptoException
      */
     public function decryptWithPassword($ciphertext, $password)
     {
-        // TODO: Implement decryptWithPassword() method.
+        try {
+            return $this->encryption->decryptWithPassword($ciphertext, $password);
+        } catch (BaseCryptoException $ex) {
+            throw new CryptoException($ex->getMessage());
+        }
     }
 
     /**
-     * Encrypts a file with a password.
+     * {@inheritdoc}
      *
-     * @param string $inputFilename  Path to a file containing the plaintext to encrypt
-     * @param string $outputFilename Path to save the ciphertext file
-     * @param string $password       The password used for decryption
+     * @throws CryptoException
      */
     public function encryptFileWithPassword($inputFilename, $outputFilename, $password)
     {
-        // TODO: Implement encryptFileWithPassword() method.
+        try {
+            return $this->encryption->encryptFileWithPassword($inputFilename, $outputFilename, $password);
+        } catch (BaseCryptoException $ex) {
+            throw new CryptoException($ex->getMessage());
+        }
     }
 
     /**
-     * Decrypts a file with a password.
+     * {@inheritdoc}
      *
-     * @param string $inputFilename  Path to a file containing the ciphertext to decrypt
-     * @param string $outputFilename Path to save the decrypted plaintext file
-     * @param string $password       The password used for decryption
+     * @throws CryptoException
      */
     public function decryptFileWithPassword($inputFilename, $outputFilename, $password)
     {
-        // TODO: Implement decryptFileWithPassword() method.
+        try {
+            return $this->encryption->decryptFileWithPassword($inputFilename, $outputFilename, $password);
+        } catch (BaseCryptoException $ex) {
+            throw new CryptoException($ex->getMessage());
+        }
     }
 }

@@ -24,7 +24,7 @@ final class Encryption extends AbstractEncryption
     /**
      * {@inheritdoc}
      *
-     * @throw \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      *
      * @deprecated since version 1.2, to be removed in 2.0. Use encryptWithKey instead
      */
@@ -38,7 +38,7 @@ final class Encryption extends AbstractEncryption
     /**
      * {@inheritdoc}
      *
-     * @throw \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function encryptWithKey($plaintext, KeyInterface $key)
     {
@@ -126,53 +126,47 @@ final class Encryption extends AbstractEncryption
     }
 
     /**
-     * Encrypts a plaintext string using a secret password.
+     * {@inheritdoc}
      *
-     * @param string $plaintext String to encrypt
-     * @param string $password  String containing the secret password used for encryption
-     *
-     * @return string A ciphertext string representing $plaintext encrypted with a key derived from $password
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function encryptWithPassword($plaintext, $password)
     {
-        // TODO: Implement encryptWithPassword() method.
+        return BaseCrypto::encryptWithPassword($plaintext, $password);
     }
 
     /**
-     * Decrypts a ciphertext string using a secret password.
+     * {@inheritdoc}
      *
-     * @param string $ciphertext ciphertext to be decrypted
-     * @param string $password   A string containing the secret password used for decryption
-     *
-     * @return string If the decryption succeeds, returns a string containing the same value as the string that was passed to encrypt() when $ciphertext was produced
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      */
     public function decryptWithPassword($ciphertext, $password)
     {
-        // TODO: Implement decryptWithPassword() method.
+        return BaseCrypto::decryptWithPassword($ciphertext, $password);
     }
 
     /**
-     * Encrypts a file with a password.
+     * {@inheritdoc}
      *
-     * @param string $inputFilename  Path to a file containing the plaintext to encrypt
-     * @param string $outputFilename Path to save the ciphertext file
-     * @param string $password       The password used for decryption
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function encryptFileWithPassword($inputFilename, $outputFilename, $password)
     {
-        // TODO: Implement encryptFileWithPassword() method.
+        BaseCryptoFile::encryptFileWithPassword($inputFilename, $outputFilename, $password);
     }
 
     /**
-     * Decrypts a file with a password.
+     * {@inheritdoc}
      *
-     * @param string $inputFilename  Path to a file containing the ciphertext to decrypt
-     * @param string $outputFilename Path to save the decrypted plaintext file
-     * @param string $password       The password used for decryption
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      */
     public function decryptFileWithPassword($inputFilename, $outputFilename, $password)
     {
-        // TODO: Implement decryptFileWithPassword() method.
+        BaseCryptoFile::decryptFileWithPassword($inputFilename, $outputFilename, $password);
     }
 
     /**
