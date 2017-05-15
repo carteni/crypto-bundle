@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.0 (2017-XX-XX)
+1.3.0 (2017-05-16)
 ------------------
 * Added Encryption::encryptWithPassword
 * Added Encryption::decryptWithPassword
@@ -16,6 +16,8 @@ This methods are intentionally slow, using a lot of CPU resources for a fraction
 They apply key stretching to the password in order to make password guessing attacks more computationally expensive.
 If you need a faster way to encrypt multiple ciphertexts under the same secret, see encryptWithKey, decryptWithKey,
 encryptFileWithKey, decryptFileWithKey and use a secret to generate the Key.
+
+* (Test) key crypto is destroyed at runtime.
 
 1.2.0 (2017-14-05)
 ------------------
