@@ -11,6 +11,7 @@
 
 namespace Mes\Security\CryptoBundle\Tests;
 
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Mes\Security\CryptoBundle\Encryption;
 use Mes\Security\CryptoBundle\EncryptionInterface;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator;
@@ -32,18 +33,6 @@ class EncryptionTest extends TestCase
      * @var KeyGeneratorInterface
      */
     private $generator;
-
-    protected function setUp()
-    {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
-    }
-
-    protected function tearDown()
-    {
-        $this->encryption = null;
-        $this->generator = null;
-    }
 
     /**
      * @return array
@@ -236,5 +225,124 @@ class EncryptionTest extends TestCase
 
         unlink($tmpDecryptedFile);
         unlink($args['encryptedFile']);
+    }
+
+    /**
+     * @return array
+     */
+    public function testEncryptWithPasswordEncryptsPlaintext()
+    {
+        $plaintext = 'The quick brown fox jumps over the lazy dog';
+        $ciphertext = $this->encryption->encryptWithPassword($plaintext, 'SuperSecretPa$$word');
+
+        $this->assertTrue(ctype_print($ciphertext), 'is printable');
+
+        return array(
+            'ciphertext' => $ciphertext,
+        );
+    }
+
+    /**
+     * @depends testEncryptWithPasswordEncryptsPlaintext
+     *
+     * @param $args
+     */
+    public function testDecryptWithPasswordDecryptsCiphertext($args)
+    {
+        $plaintext = $this->encryption->decryptWithPassword($args['ciphertext'], 'SuperSecretPa$$word');
+
+        $this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext, sprintf("'%s' is correct.", $plaintext));
+    }
+
+    /**
+     * @depends testEncryptWithPasswordEncryptsPlaintext
+     *
+     * @param $args
+     */
+    public function testDecryptWithPasswordThrowsException($args)
+    {
+        $this->expectException(WrongKeyOrModifiedCiphertextException::class);
+
+        $this->encryption->decryptWithPassword($args['ciphertext'], 'SuperSecretPa$$wordIncorrect');
+    }
+
+    /**
+     * @return array
+     */
+    public function testEncryptFileWithPasswordEncryptsFile()
+    {
+        // Create file to encrypt.
+        $tmpfname = tempnam(__DIR__, 'CRYPTO_');
+        $plainContent = "Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.";
+        $handle = fopen($tmpfname, 'w');
+        fwrite($handle, $plainContent);
+        fclose($handle);
+
+        $filename = md5(uniqid());
+        $encryptedFilename = __DIR__."/ENCRYPTED_$filename.crypto";
+
+        $this->encryption->encryptFileWithPassword($tmpfname, $encryptedFilename, 'SuperSecretPa$$word');
+
+        $this->assertFileExists($encryptedFilename, sprintf('%s file must exists', $encryptedFilename));
+        $this->assertGreaterThan(0, (new \SplFileInfo($encryptedFilename))->getSize());
+
+        unlink($tmpfname);
+
+        return array(
+            'encryptedFile' => $encryptedFilename,
+        );
+    }
+
+    /**
+     * @depends testEncryptFileWithPasswordEncryptsFile
+     *
+     * @param $args
+     */
+    public function testDecryptFileWithPasswordDecryptsEncryptedFile($args)
+    {
+        $tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
+
+        $this->encryption->decryptFileWithPassword($args['encryptedFile'], $tmpDecryptedFile, 'SuperSecretPa$$word');
+
+        $this->assertFileExists($tmpDecryptedFile);
+        $this->assertGreaterThan(0, (new \SplFileInfo($tmpDecryptedFile))->getSize());
+        $this->assertContains("Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.", file_get_contents($tmpDecryptedFile));
+
+        unlink($tmpDecryptedFile);
+    }
+
+    /**
+     * @depends testEncryptFileWithPasswordEncryptsFile
+     *
+     * @param $args
+     *
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     */
+    public function testDecryptFileWithPasswordThrowsExceptionDecryptsEncryptedFile($args)
+    {
+        $this->expectException(WrongKeyOrModifiedCiphertextException::class);
+
+        $tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
+
+        try {
+            $this->encryption->decryptFileWithPassword($args['encryptedFile'], $tmpDecryptedFile, 'SuperSecretPa$$wordIncorrect');
+        } catch (WrongKeyOrModifiedCiphertextException $e) {
+            unlink($tmpDecryptedFile);
+            unlink($args['encryptedFile']);
+
+            throw $e;
+        }
+    }
+
+    protected function setUp()
+    {
+        $this->encryption = new Encryption();
+        $this->generator = new KeyGenerator();
+    }
+
+    protected function tearDown()
+    {
+        $this->encryption = null;
+        $this->generator = null;
     }
 }

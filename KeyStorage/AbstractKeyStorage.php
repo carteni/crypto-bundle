@@ -11,20 +11,9 @@
 
 namespace Mes\Security\CryptoBundle\KeyStorage;
 
-use Mes\Security\CryptoBundle\Model\KeyInterface;
-
 /**
  * Class AbstractKeyStorage.
  */
 abstract class AbstractKeyStorage implements KeyStorageInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getKey();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function setKey(KeyInterface $key);
 }

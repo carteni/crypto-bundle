@@ -72,8 +72,8 @@ final class KeyGenerator extends AbstractKeyGenerator
     }
 
     /**
-     * @param $key_encoded
-     * @param $secret
+     * @param string $key_encoded A string of printable ASCII characters representing a KeyInterface instance
+     * @param string $secret      The secret string to make the secret-protected Key
      *
      * @return BaseKey|BaseKeyProtectedByPassword|null
      */

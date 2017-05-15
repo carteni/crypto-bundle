@@ -29,7 +29,7 @@ interface KeyStorageInterface
     /**
      * Stores a Key.
      *
-     * @param KeyInterface $key
+     * @param KeyInterface $key The Key instance
      */
     public function setKey(KeyInterface $key);
 }

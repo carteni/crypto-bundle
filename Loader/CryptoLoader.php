@@ -51,7 +51,7 @@ class CryptoLoader
     /**
      * @return string
      *
-     * @throw \UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function loadKey()
     {
@@ -65,7 +65,7 @@ class CryptoLoader
     /**
      * @return string
      *
-     * @throw \UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function loadSecret()
     {
