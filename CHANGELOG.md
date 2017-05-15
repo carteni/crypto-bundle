@@ -17,6 +17,8 @@ They apply key stretching to the password in order to make password guessing att
 If you need a faster way to encrypt multiple ciphertexts under the same secret, see encryptWithKey, decryptWithKey,
 encryptFileWithKey, decryptFileWithKey and use a secret to generate the Key.
 
+* (Test) key crypto is destroyed at runtime.
+
 1.2.0 (2017-14-05)
 ------------------
 * Deprecated Encryption::encrypt. Added Encryption::encryptWithKey
