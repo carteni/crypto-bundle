@@ -21,168 +21,168 @@ use Mes\Security\CryptoBundle\Model\KeyInterface;
  */
 final class Encryption extends AbstractEncryption
 {
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throw \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 *
-	 * @deprecated since version 1.2, to be removed in 2.0. Use encryptWithKey instead
-	 */
-	public function encrypt($plaintext, KeyInterface $key)
-	{
-		@trigger_error('encrypt() is deprecated since version 1.2 and will be removed in 2.0. Use encryptWithKey instead.', E_USER_DEPRECATED);
+    /**
+     * {@inheritdoc}
+     *
+     * @throw \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     *
+     * @deprecated since version 1.2, to be removed in 2.0. Use encryptWithKey instead
+     */
+    public function encrypt($plaintext, KeyInterface $key)
+    {
+        @trigger_error('encrypt() is deprecated since version 1.2 and will be removed in 2.0. Use encryptWithKey instead.', E_USER_DEPRECATED);
 
-		return BaseCrypto::encrypt($plaintext, $this->unlockKey($key));
-	}
+        return BaseCrypto::encrypt($plaintext, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throw \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 */
-	public function encryptWithKey($plaintext, KeyInterface $key)
-	{
-		return BaseCrypto::encrypt($plaintext, $this->unlockKey($key));
-	}
+    /**
+     * {@inheritdoc}
+     *
+     * @throw \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function encryptWithKey($plaintext, KeyInterface $key)
+    {
+        return BaseCrypto::encrypt($plaintext, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-	 *
-	 * @deprecated since version 1.2, to be removed in 2.0. Use decryptWithKey instead
-	 */
-	public function decrypt($ciphertext, KeyInterface $key)
-	{
-		@trigger_error('decrypt() is deprecated since version 1.2 and will be removed in 2.0. Use decryptWithKey instead.', E_USER_DEPRECATED);
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     *
+     * @deprecated since version 1.2, to be removed in 2.0. Use decryptWithKey instead
+     */
+    public function decrypt($ciphertext, KeyInterface $key)
+    {
+        @trigger_error('decrypt() is deprecated since version 1.2 and will be removed in 2.0. Use decryptWithKey instead.', E_USER_DEPRECATED);
 
-		return BaseCrypto::decrypt($ciphertext, $this->unlockKey($key));
-	}
+        return BaseCrypto::decrypt($ciphertext, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-	 */
-	public function decryptWithKey($ciphertext, KeyInterface $key)
-	{
-		return BaseCrypto::decrypt($ciphertext, $this->unlockKey($key));
-	}
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     */
+    public function decryptWithKey($ciphertext, KeyInterface $key)
+    {
+        return BaseCrypto::decrypt($ciphertext, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Defuse\Crypto\Exception\IOException
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 *
-	 * @deprecated since version 1.2, to be removed in 2.0. Use encryptFileWithKey instead
-	 */
-	public function encryptFile($inputFilename, $outputFilename, KeyInterface $key)
-	{
-		@trigger_error('encryptFile() is deprecated since version 1.2 and will be removed in 2.0. Use encryptFileWithKey instead.', E_USER_DEPRECATED);
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     *
+     * @deprecated since version 1.2, to be removed in 2.0. Use encryptFileWithKey instead
+     */
+    public function encryptFile($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        @trigger_error('encryptFile() is deprecated since version 1.2 and will be removed in 2.0. Use encryptFileWithKey instead.', E_USER_DEPRECATED);
 
-		BaseCryptoFile::encryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
-	}
+        BaseCryptoFile::encryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Defuse\Crypto\Exception\IOException
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 */
-	public function encryptFileWithKey($inputFilename, $outputFilename, KeyInterface $key)
-	{
-		BaseCryptoFile::encryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
-	}
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function encryptFileWithKey($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        BaseCryptoFile::encryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Defuse\Crypto\Exception\IOException
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-	 *
-	 * @deprecated since version 1.2, to be removed in 2.0. Use decryptFileWithKey instead
-	 */
-	public function decryptFile($inputFilename, $outputFilename, KeyInterface $key)
-	{
-		@trigger_error('decryptFile() is deprecated since version 1.2 and will be removed in 2.0. Use decryptFileWithKey instead.', E_USER_DEPRECATED);
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     *
+     * @deprecated since version 1.2, to be removed in 2.0. Use decryptFileWithKey instead
+     */
+    public function decryptFile($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        @trigger_error('decryptFile() is deprecated since version 1.2 and will be removed in 2.0. Use decryptFileWithKey instead.', E_USER_DEPRECATED);
 
-		BaseCryptoFile::decryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
-	}
+        BaseCryptoFile::decryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @throws \Defuse\Crypto\Exception\IOException
-	 * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-	 * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-	 */
-	public function decryptFileWithKey($inputFilename, $outputFilename, KeyInterface $key)
-	{
-		BaseCryptoFile::decryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
-	}
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     */
+    public function decryptFileWithKey($inputFilename, $outputFilename, KeyInterface $key)
+    {
+        BaseCryptoFile::decryptFile($inputFilename, $outputFilename, $this->unlockKey($key));
+    }
 
-	/**
-	 * Encrypts a plaintext string using a secret password.
-	 *
-	 * @param string $plaintext String to encrypt
-	 * @param string $password String containing the secret password used for encryption
-	 *
-	 * @return string A ciphertext string representing $plaintext encrypted with a key derived from $password
-	 */
-	public function encryptWithPassword($plaintext, $password)
-	{
-		// TODO: Implement encryptWithPassword() method.
-	}
+    /**
+     * Encrypts a plaintext string using a secret password.
+     *
+     * @param string $plaintext String to encrypt
+     * @param string $password  String containing the secret password used for encryption
+     *
+     * @return string A ciphertext string representing $plaintext encrypted with a key derived from $password
+     */
+    public function encryptWithPassword($plaintext, $password)
+    {
+        // TODO: Implement encryptWithPassword() method.
+    }
 
-	/**
-	 * Decrypts a ciphertext string using a secret password.
-	 *
-	 * @param string $ciphertext ciphertext to be decrypted
-	 * @param string $password A string containing the secret password used for decryption
-	 *
-	 * @return string If the decryption succeeds, returns a string containing the same value as the string that was passed to encrypt() when $ciphertext was produced
-	 */
-	public function decryptWithPassword($ciphertext, $password)
-	{
-		// TODO: Implement decryptWithPassword() method.
-	}
+    /**
+     * Decrypts a ciphertext string using a secret password.
+     *
+     * @param string $ciphertext ciphertext to be decrypted
+     * @param string $password   A string containing the secret password used for decryption
+     *
+     * @return string If the decryption succeeds, returns a string containing the same value as the string that was passed to encrypt() when $ciphertext was produced
+     */
+    public function decryptWithPassword($ciphertext, $password)
+    {
+        // TODO: Implement decryptWithPassword() method.
+    }
 
-	/**
-	 * Encrypts a file with a password.
-	 *
-	 * @param string $inputFilename Path to a file containing the plaintext to encrypt
-	 * @param string $outputFilename Path to save the ciphertext file
-	 * @param string $password The password used for decryption
-	 */
-	public function encryptFileWithPassword($inputFilename, $outputFilename, $password)
-	{
-		// TODO: Implement encryptFileWithPassword() method.
-	}
+    /**
+     * Encrypts a file with a password.
+     *
+     * @param string $inputFilename  Path to a file containing the plaintext to encrypt
+     * @param string $outputFilename Path to save the ciphertext file
+     * @param string $password       The password used for decryption
+     */
+    public function encryptFileWithPassword($inputFilename, $outputFilename, $password)
+    {
+        // TODO: Implement encryptFileWithPassword() method.
+    }
 
-	/**
-	 * Decrypts a file with a password.
-	 *
-	 * @param string $inputFilename Path to a file containing the ciphertext to decrypt
-	 * @param string $outputFilename Path to save the decrypted plaintext file
-	 * @param string $password The password used for decryption
-	 */
-	public function decryptFileWithPassword($inputFilename, $outputFilename, $password)
-	{
-		// TODO: Implement decryptFileWithPassword() method.
-	}
+    /**
+     * Decrypts a file with a password.
+     *
+     * @param string $inputFilename  Path to a file containing the ciphertext to decrypt
+     * @param string $outputFilename Path to save the decrypted plaintext file
+     * @param string $password       The password used for decryption
+     */
+    public function decryptFileWithPassword($inputFilename, $outputFilename, $password)
+    {
+        // TODO: Implement decryptFileWithPassword() method.
+    }
 
-	/**
-	 * @param Key|KeyInterface $key
-	 *
-	 * @return \Defuse\Crypto\Key|\Defuse\Crypto\KeyProtectedByPassword
-	 */
-	private function unlockKey(Key $key)
-	{
-		return $key->unlock()
-				   ->getRawKey();
-	}
+    /**
+     * @param Key|KeyInterface $key
+     *
+     * @return \Defuse\Crypto\Key|\Defuse\Crypto\KeyProtectedByPassword
+     */
+    private function unlockKey(Key $key)
+    {
+        return $key->unlock()
+                   ->getRawKey();
+    }
 }
