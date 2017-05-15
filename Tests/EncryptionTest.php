@@ -471,12 +471,12 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testEncryptWithPasswordEncryptsPlaintext
      *
+     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     *
      * @param $args
      */
     public function testDecryptWithPasswordThrowsException($args)
     {
-        $this->expectException(WrongKeyOrModifiedCiphertextException::class);
-
         $this->encryption->decryptWithPassword($args['ciphertext'], 'SuperSecretPa$$wordIncorrect');
     }
 
@@ -528,14 +528,14 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testEncryptFileWithPasswordEncryptsFile
      *
+     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     *
      * @param $args
      *
      * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      */
     public function testDecryptFileWithPasswordThrowsExceptionDecryptsEncryptedFile($args)
     {
-        $this->expectException(WrongKeyOrModifiedCiphertextException::class);
-
         $tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
 
         try {
