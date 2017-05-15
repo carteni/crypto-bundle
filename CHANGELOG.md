@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.0 (2017-XX-XX)
+1.3.0 (2017-05-16)
 ------------------
 * Added Encryption::encryptWithPassword
 * Added Encryption::decryptWithPassword

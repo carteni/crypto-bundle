@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1494860351">
-  <project timestamp="1494860351">
+<coverage generated="1494863187">
+  <project timestamp="1494863187">
     <package name="Mes\Security\CryptoBundle">
       <file name="/var/www/crypto-bundle/AbstractEncryption.php">
         <class name="AbstractEncryption" namespace="Mes\Security\CryptoBundle">

@@ -3,8 +3,9 @@
 <phpunit bootstrap="./Tests/bootstrap.php" colors="true">
 
     <testsuites>
-        <testsuite name="Crypto Bundle test suite">
+        <testsuite name="Crypto Bundle Test Suite">
             <directory suffix="Test.php">./Tests/Command</directory>
+            <directory suffix="Test.php">./Tests/Loader</directory>
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
