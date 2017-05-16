@@ -16,15 +16,16 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Mes\Security\CryptoBundle\EncryptionWrapper;
 use Mes\Security\CryptoBundle\Exception\CryptoException;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class EncryptionWrapperTest.
  */
-class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
+class EncryptionWrapperTest extends TestCase
 {
     /**
-     * @var EncryptionWrapper
+     * @var \Mes\Security\CryptoBundle\EncryptionWrapper
      */
     private $wrapper;
 
@@ -46,26 +47,17 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
         $this->encryption = null;
     }
 
-    /* ===================================
-     *
-     * EncryptionInterface::EncryptWithKey
-     *
-     * ===================================
-     */
-
     /**
-     * @throws CryptoException
+     * @throws \Mes\Security\CryptoBundle\Exception\CryptoException
      */
     public function testEncryptWithKeyEncryptsPlaintext()
     {
         $this->encryption->expects($this->once())
                          ->method('encryptWithKey')
-                         ->with('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                    ->getMock())
+                         ->with('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock())
                          ->will($this->returnValue('ThisIsACipherText'));
 
-        $ciphertext = $this->wrapper->encryptWithKey('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                                         ->getMock());
+        $ciphertext = $this->wrapper->encryptWithKey('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
 
         $this->assertTrue(ctype_print($ciphertext), 'is printable');
     }
@@ -78,30 +70,26 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
         try {
             $this->encryption->expects($this->once())
                              ->method('encryptWithKey')
-                             ->with('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                        ->getMock())
+                             ->with('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock())
                              ->will($this->throwException(new EnvironmentIsBrokenException()));
         } catch (EnvironmentIsBrokenException $e) {
             $this->throwException(new CryptoException());
         }
 
-        $this->wrapper->encryptWithKey('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                           ->getMock());
+        $this->wrapper->encryptWithKey('The quick brown fox jumps over the lazy dog', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
     }
 
     /**
-     * @throws CryptoException
+     * @throws \Mes\Security\CryptoBundle\Exception\CryptoException
      */
     public function testDecryptWithKeyDecryptsCiphertext()
     {
         $this->encryption->expects($this->once())
                          ->method('decryptWithKey')
-                         ->with('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                          ->getMock())
+                         ->with('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock())
                          ->will($this->returnValue('The quick brown fox jumps over the lazy dog'));
 
-        $decryptedText = $this->wrapper->decryptWithKey('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                  ->getMock());
+        $decryptedText = $this->wrapper->decryptWithKey('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
 
         $this->assertSame('The quick brown fox jumps over the lazy dog', $decryptedText);
     }
@@ -114,28 +102,19 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
         try {
             $this->encryption->expects($this->once())
                              ->method('decryptWithKey')
-                             ->with('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                              ->getMock())
+                             ->with('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock())
                              ->will($this->throwException(new BaseCryptoException()));
         } catch (BaseCryptoException $e) {
             $this->throwException(new CryptoException());
         }
 
-        $this->wrapper->decryptWithKey('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                 ->getMock());
+        $this->wrapper->decryptWithKey('ThisIsACipherText', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
     }
 
-    /* =======================================
-     *
-     * EncryptionInterface::EncryptFileWithKey
-     *
-     * =======================================
-     */
-
     /**
-     * @throws CryptoException
+     * @throws \Mes\Security\CryptoBundle\Exception\CryptoException
      */
-    public function testEncryptFileWithKeyEncryptsFile()
+    public function testEncryptWithKeyFileEncryptsFile()
     {
         $this->encryption->expects($this->once())
                          ->method('encryptFileWithKey')
@@ -144,8 +123,7 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
                              $fs->dumpFile($output, '');
                          }));
 
-        $this->wrapper->encryptFileWithKey(__DIR__.'/file.txt', __DIR__.'/file.crypto', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                                 ->getMock());
+        $this->wrapper->encryptFileWithKey(__DIR__.'/file.txt', __DIR__.'/file.crypto', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
 
         $this->assertFileExists(__DIR__.'/file.crypto');
 
@@ -153,9 +131,9 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws CryptoException
+     * @throws \Mes\Security\CryptoBundle\Exception\CryptoException
      */
-    public function testDecryptFileWithKeyDecryptsEncryptedFile()
+    public function testDecryptWithKeyFileDecryptsEncryptedFile()
     {
         $this->encryption->expects($this->once())
                          ->method('decryptFileWithKey')
@@ -164,8 +142,7 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
                              $fs->dumpFile($output, 'Plain text');
                          }));
 
-        $this->wrapper->decryptFileWithKey(__DIR__.'/file.crypto', __DIR__.'/file.txt', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                                 ->getMock());
+        $this->wrapper->decryptFileWithKey(__DIR__.'/file.crypto', __DIR__.'/file.txt', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
 
         $this->assertFileExists(__DIR__.'/file.txt');
         $this->assertContains('Plain text', file_get_contents(__DIR__.'/file.txt'));
@@ -176,7 +153,7 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Mes\Security\CryptoBundle\Exception\CryptoException
      */
-    public function testEncryptFileWithKeyThrowsException()
+    public function testEncryptWithKeyFileThrowsException()
     {
         try {
             $this->encryption->expects($this->once())
@@ -186,14 +163,13 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
             $this->throwException(new CryptoException());
         }
 
-        $this->wrapper->encryptFileWithKey(__DIR__.'/file.txt', __DIR__.'/file.crypto', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                                 ->getMock());
+        $this->wrapper->encryptFileWithKey(__DIR__.'/file.txt', __DIR__.'/file.crypto', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
     }
 
     /**
      * @expectedException \Mes\Security\CryptoBundle\Exception\CryptoException
      */
-    public function testDecryptFileWithKeyThrowsException()
+    public function testDecryptWithKeyFileThrowsException()
     {
         try {
             $this->encryption->expects($this->once())
@@ -203,16 +179,8 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
             $this->throwException(new CryptoException());
         }
 
-        $this->wrapper->decryptFileWithKey(__DIR__.'/file.crypto', __DIR__.'/file.txt', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                                                                 ->getMock());
+        $this->wrapper->decryptFileWithKey(__DIR__.'/file.crypto', __DIR__.'/file.txt', $this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
     }
-
-    /* ========================================
-     *
-     * EncryptionInterface::EncryptWithPassword
-     *
-     * ========================================
-     */
 
     public function testEncryptWithPasswordEncryptsPlaintext()
     {
@@ -271,13 +239,6 @@ class EncryptionWrapperTest extends \PHPUnit_Framework_TestCase
 
         $this->wrapper->decryptWithPassword('ThisIsACipherText', 'SuperSecretPa$$word');
     }
-
-    /* ============================================
-     *
-     * EncryptionInterface::EncryptFileWithPassword
-     *
-     * ============================================
-     */
 
     public function testEncryptFileWithPasswordEncryptsFile()
     {

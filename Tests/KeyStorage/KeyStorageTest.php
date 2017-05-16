@@ -15,26 +15,17 @@ use Defuse\Crypto\KeyProtectedByPassword;
 use Mes\Security\CryptoBundle\KeyStorage\KeyStorage;
 use Mes\Security\CryptoBundle\KeyStorage\KeyStorageInterface;
 use Mes\Security\CryptoBundle\Model\Key;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class KeyStorageTest.
  */
-class KeyStorageTest extends \PHPUnit_Framework_TestCase
+class KeyStorageTest extends TestCase
 {
     /**
      * @var KeyStorageInterface
      */
     private $keyStorage;
-
-    protected function setUp()
-    {
-        $this->keyStorage = new KeyStorage();
-    }
-
-    protected function tearDown()
-    {
-        $this->keyStorage = null;
-    }
 
     public function testSetKeyStoresKey()
     {
@@ -47,5 +38,15 @@ class KeyStorageTest extends \PHPUnit_Framework_TestCase
                                                                                          ->getRawKey());
         $this->assertSame($secret, $this->keyStorage->getKey()
                                                     ->getSecret());
+    }
+
+    protected function setUp()
+    {
+        $this->keyStorage = new KeyStorage();
+    }
+
+    protected function tearDown()
+    {
+        $this->keyStorage = null;
     }
 }
