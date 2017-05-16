@@ -29,7 +29,7 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
     private $keyGenerator;
 
     /**
-     * @var \Mes\Security\CryptoBundle\KeyManager
+     * @var KeyManager
      */
     private $keyManager;
 
@@ -87,7 +87,8 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
         $this->keyGenerator->expects($this->once())
                            ->method('generate')
                            ->with(null)
-                           ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
+                                                          ->getMock()));
 
         $this->keyStorage->expects($this->once())
                          ->method('setKey');
@@ -107,7 +108,8 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->keyStorage->expects($this->once())
                          ->method('getKey')
-                         ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                         ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
+                                                        ->getMock()));
 
         $key = $this->keyManager->getKey();
 
@@ -118,9 +120,11 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
     {
         $this->keyStorage->expects($this->once())
                          ->method('setKey')
-                         ->with($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface'));
+                         ->with($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
+                                     ->getMock());
 
-        $this->keyManager->setKey($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface'));
+        $this->keyManager->setKey($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
+                                       ->getMock());
     }
 
     public function testSetSecretStoreSecret()

@@ -16,13 +16,4 @@ namespace Mes\Security\CryptoBundle\KeyGenerator;
  */
 abstract class AbstractKeyGenerator implements KeyGeneratorInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function generate($secret = null);
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function generateFromAscii($key_encoded, $secret = null);
 }

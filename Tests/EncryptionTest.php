@@ -33,24 +33,24 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
      */
     private $generator;
 
-    /**
-     * @group legacy
-     *
-     * @return array
-     */
-    public function testEncryptEncryptsPlaintext()
+    protected function setUp()
     {
-        $key = $this->generator->generate();
-        $plaintext = 'The quick brown fox jumps over the lazy dog';
-        $ciphertext = $this->encryption->encrypt($plaintext, $key);
-
-        $this->assertTrue(ctype_print($ciphertext), 'is printable');
-
-        return array(
-            'ciphertext' => $ciphertext,
-            'key_encoded' => $key->getEncoded(),
-        );
+        $this->encryption = new Encryption();
+        $this->generator = new KeyGenerator();
     }
+
+    protected function tearDown()
+    {
+        $this->encryption = null;
+        $this->generator = null;
+    }
+
+    /* ===================================
+     *
+     * EncryptionInterface::EncryptWithKey
+     *
+     * ===================================
+     */
 
     /**
      * @return array
@@ -70,22 +70,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintext
-     *
-     * @param $args
-     */
-    public function testDecryptDecryptsCiphertext($args)
-    {
-        $key = $this->generator->generateFromAscii($args['key_encoded']);
-        $plaintext = $this->encryption->decrypt($args['ciphertext'], $key);
-
-        $this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintext
+     * @depends testEncryptWithKeyEncryptsPlaintext
      *
      * @param $args
      */
@@ -98,22 +83,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintext
-     *
-     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionBecauseCiphertextIsCorrupted($args)
-    {
-        $key = $this->generator->generateFromAscii($args['key_encoded']);
-        $this->encryption->decrypt($args['ciphertext'].'{FakeString}', $key);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintext
+     * @depends testEncryptWithKeyEncryptsPlaintext
      *
      * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      *
@@ -126,22 +96,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintext
-     *
-     * @expectedException \Defuse\Crypto\Exception\BadFormatException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionBecauseKeyIsCorrupted($args)
-    {
-        $key = $this->generator->generateFromAscii($args['key_encoded'].'{FakeString}');
-        $this->encryption->decrypt($args['ciphertext'], $key);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintext
+     * @depends testEncryptWithKeyEncryptsPlaintext
      *
      * @expectedException \Defuse\Crypto\Exception\BadFormatException
      *
@@ -153,31 +108,12 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
         $this->encryption->decryptWithKey($args['ciphertext'], $key);
     }
 
-    /**
-     * @group legacy
+    /* =============================================================
      *
-     * @return array
+     * EncryptionInterface::EncryptWithKey and secret-protected Key
+     *
+     * =============================================================
      */
-    public function testEncryptEncryptsPlaintextWithPassword()
-    {
-        $key = $this->generator->generate('ThisIsASecretPassword');
-
-        $this->assertInstanceOf('\Defuse\Crypto\KeyProtectedByPassword', $key->getRawKey());
-        $this->assertSame('ThisIsASecretPassword', $key->getSecret());
-
-        $plaintext = 'The quick brown fox jumps over the lazy dog';
-        $ciphertext = $this->encryption->encrypt($plaintext, $key);
-
-        $this->assertInstanceOf('\Defuse\Crypto\Key', $key->getRawKey());
-        $this->assertTrue(ctype_print($ciphertext), 'is printable');
-        $this->assertTrue(ctype_print($key->getEncoded()), 'is printable');
-
-        return array(
-            'ciphertext' => $ciphertext,
-            'key_encoded' => $key->getEncoded(),
-            'secret' => $key->getSecret(),
-        );
-    }
 
     /**
      * @return array
@@ -204,26 +140,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @param $args
-     */
-    public function testDecryptDecryptsCiphertextWithPassword($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret']);
-
-        $this->assertInstanceOf('\Defuse\Crypto\KeyProtectedByPassword', $keyFromAscii->getRawKey());
-        $this->assertSame($args['secret'], $keyFromAscii->getSecret());
-
-        $plaintext = $this->encryption->decrypt($args['ciphertext'], $keyFromAscii);
-
-        $this->assertSame('The quick brown fox jumps over the lazy dog', $plaintext);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
+     * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
      *
      * @param $args
      */
@@ -240,29 +157,13 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintextWithPassword
+     * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
      *
      * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      *
      * @param $args
      */
-    public function testDecryptThrowsExceptionWithCiphertextWithPasswordBecauseSecretIsCorrupted($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret'].'{FakeString}');
-
-        $this->encryption->decrypt($args['ciphertext'], $keyFromAscii);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     *
-     * @param $args
-     */
-    public function testDecryptWithThrowsExceptionWithCiphertextWithPasswordBecauseSecretIsCorrupted($args)
+    public function testDecryptWithKeyThrowsExceptionWithCiphertextWithPasswordBecauseSecretIsCorrupted($args)
     {
         $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret'].'{FakeString}');
 
@@ -270,23 +171,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @expectedException \Defuse\Crypto\Exception\BadFormatException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionWithCiphertextWithPasswordBecauseKeyIsCorrupted($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'].'{FakeString}', $args['secret']);
-
-        $this->encryption->decrypt($args['ciphertext'], $keyFromAscii);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
+     * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
      *
      * @expectedException \Defuse\Crypto\Exception\BadFormatException
      *
@@ -300,23 +185,7 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptEncryptsPlaintextWithPassword
-     *
-     * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     *
-     * @param $args
-     */
-    public function testDecryptThrowsExceptionWithCiphertextWithPasswordBecauseCiphertextIsCorrupted($args)
-    {
-        $keyFromAscii = $this->generator->generateFromAscii($args['key_encoded'], $args['secret']);
-
-        $this->encryption->decrypt($args['ciphertext'].'{FakeString}', $keyFromAscii);
-    }
-
-    /**
-     * @depends testEncryptEncryptsPlaintextWithPassword
+     * @depends testEncryptWithKeyEncryptsPlaintextWithPassword
      *
      * @expectedException \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      *
@@ -329,44 +198,17 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
         $this->encryption->decryptWithKey($args['ciphertext'].'{FakeString}', $keyFromAscii);
     }
 
-    /**
-     * @group legacy
+    /* ================================================================
      *
-     * @return array
+     * EncryptionInterface::EncryptFileWithKey and secret-protected Key
+     *
+     * ================================================================
      */
-    public function testEncryptFileEncryptsFile()
-    {
-        /** @var KeyInterface $key */
-        $key = $this->generator->generate('CryptoSecret');
-
-        // Create file to encrypt.
-        $tmpfname = tempnam(__DIR__, 'CRYPTO_');
-        $plainContent = "Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.";
-        $handle = fopen($tmpfname, 'w');
-        fwrite($handle, $plainContent);
-        fclose($handle);
-
-        $filename = md5(uniqid());
-        $encryptedFilename = __DIR__."/ENCRYPTED_$filename.crypto";
-
-        $this->encryption->encryptFile($tmpfname, $encryptedFilename, $key);
-
-        $this->assertFileExists($encryptedFilename, sprintf('%s file must exists', $encryptedFilename));
-        $this->assertGreaterThan(0, (new \SplFileInfo($encryptedFilename))->getSize());
-
-        unlink($tmpfname);
-
-        return array(
-            'key' => $key->getEncoded(),
-            'secret' => $key->getSecret(),
-            'encryptedFile' => $encryptedFilename,
-        );
-    }
 
     /**
      * @return array
      */
-    public function testEncryptWithKeyFileEncryptsFile()
+    public function testEncryptFileWithKeyEncryptsFile()
     {
         /** @var KeyInterface $key */
         $key = $this->generator->generate('CryptoSecret');
@@ -396,35 +238,11 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group legacy
-     *
-     * @depends testEncryptFileEncryptsFile
+     * @depends testEncryptFileWithKeyEncryptsFile
      *
      * @param $args
      */
-    public function testDecryptFileDecryptsEncryptedFile($args)
-    {
-        /** @var KeyInterface $key */
-        $key = $this->generator->generateFromAscii($args['key'], $args['secret']);
-
-        $tmpDecryptedFile = tempnam(__DIR__, '_CRYPTO');
-
-        $this->encryption->decryptFile($args['encryptedFile'], $tmpDecryptedFile, $key);
-
-        $this->assertFileExists($tmpDecryptedFile);
-        $this->assertGreaterThan(0, (new \SplFileInfo($tmpDecryptedFile))->getSize());
-        $this->assertContains("Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.", file_get_contents($tmpDecryptedFile));
-
-        unlink($tmpDecryptedFile);
-        unlink($args['encryptedFile']);
-    }
-
-    /**
-     * @depends testEncryptWithKeyFileEncryptsFile
-     *
-     * @param $args
-     */
-    public function testDecryptWithKeyFileDecryptsEncryptedFile($args)
+    public function testDecryptFileWithKeyDecryptsEncryptedFile($args)
     {
         /** @var KeyInterface $key */
         $key = $this->generator->generateFromAscii($args['key'], $args['secret']);
@@ -440,6 +258,13 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
         unlink($tmpDecryptedFile);
         unlink($args['encryptedFile']);
     }
+
+    /* ========================================
+     *
+     * EncryptionInterface::EncryptWithPassword
+     *
+     * ========================================
+     */
 
     /**
      * @return array
@@ -479,6 +304,13 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
     {
         $this->encryption->decryptWithPassword($args['ciphertext'], 'SuperSecretPa$$wordIncorrect');
     }
+
+    /* ============================================
+     *
+     * EncryptionInterface::EncryptFileWithPassword
+     *
+     * ============================================
+     */
 
     /**
      * @return array
@@ -546,17 +378,5 @@ class EncryptionTest extends \PHPUnit_Framework_TestCase
 
             throw $e;
         }
-    }
-
-    protected function setUp()
-    {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
-    }
-
-    protected function tearDown()
-    {
-        $this->encryption = null;
-        $this->generator = null;
     }
 }

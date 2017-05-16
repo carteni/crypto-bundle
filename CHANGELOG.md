@@ -1,6 +1,18 @@
 Changelog
 =========
 
+2.0.0 (2017-XX-XX)
+------------------
+* Added Encryption::encryptResourceWithKey
+* Added Encryption::encryptResourceWithPassword
+* Added Encryption::decryptResourceWithKey
+* Added Encryption::decryptResourceWithPassword
+* Added EncryptionWrapper::encryptResourceWithKey
+* Added EncryptionWrapper::encryptResourceWithPassword
+* Added EncryptionWrapper::decryptResourceWithKey
+* Added EncryptionWrapper::decryptResourceWithPassword
+* Removed deprecations
+
 1.3.0 (2017-05-16)
 ------------------
 * Added Encryption::encryptWithPassword

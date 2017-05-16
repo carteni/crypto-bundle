@@ -95,7 +95,7 @@ abstract class AbstractCommand extends Command
      */
     protected function writeSection(OutputInterface $output, $text, $style = 'bg=blue;fg=white')
     {
-        /**
+        /*
          * @var FormatterHelper
          */
         $formatter = $this->getHelperSet()

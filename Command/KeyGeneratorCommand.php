@@ -193,7 +193,7 @@ EOT
 
         if (!empty($options['dir']) && $output->isDebug()) {
 
-            /**
+            /*
              * @var DebugFormatterHelper
              */
             $dh = $this->getHelperSet()

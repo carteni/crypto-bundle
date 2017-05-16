@@ -21,7 +21,7 @@ class KeyTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateCreatesKey()
     {
-        /** @var \Mes\Security\CryptoBundle\Model\Key */
+        /* @var \Mes\Security\CryptoBundle\Model\Key */
         $key = Key::create(\Defuse\Crypto\Key::createNewRandomKey(), null);
         $key_encoded = $key->getEncoded();
         $rawKey = $key->getRawKey();
@@ -37,7 +37,7 @@ class KeyTest extends \PHPUnit_Framework_TestCase
     {
         $secret = 'ThisIsASecretPassword';
 
-        /** @var \Mes\Security\CryptoBundle\Model\Key */
+        /* @var \Mes\Security\CryptoBundle\Model\Key */
         $key = Key::create(KeyProtectedByPassword::createRandomPasswordProtectedKey($secret), $secret);
         $key_encoded = $key->getEncoded();
         $secret = $key->getSecret();
@@ -62,7 +62,7 @@ class KeyTest extends \PHPUnit_Framework_TestCase
     {
         $secret = 'ThisIsASecretPassword';
 
-        /** @var \Mes\Security\CryptoBundle\Model\Key */
+        /* @var \Mes\Security\CryptoBundle\Model\Key */
         $key = Key::create(KeyProtectedByPassword::createRandomPasswordProtectedKey($secret), $secret);
         $key->setSecret('NewSecret');
     }

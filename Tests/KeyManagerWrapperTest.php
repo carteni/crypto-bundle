@@ -50,7 +50,7 @@ class KeyManagerWrapperTest extends \PHPUnit_Framework_TestCase
         $this->keyManager->expects($this->once())
                          ->method('generate')
                          ->with(null)
-                         ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                         ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->wrapper->generate();
 
@@ -82,7 +82,7 @@ class KeyManagerWrapperTest extends \PHPUnit_Framework_TestCase
         $this->keyManager->expects($this->once())
                          ->method('generateFromAscii')
                          ->with($key_encoded, $secret)
-                         ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                         ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->wrapper->generateFromAscii($key_encoded, $secret);
 
@@ -113,7 +113,7 @@ class KeyManagerWrapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->keyManager->expects($this->once())
                          ->method('getKey')
-                         ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                         ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->wrapper->getKey();
 
@@ -124,9 +124,9 @@ class KeyManagerWrapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->keyManager->expects($this->once())
                          ->method('setKey')
-                         ->with($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface'));
+                         ->with($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
 
-        $this->wrapper->setKey($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface'));
+        $this->wrapper->setKey($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock());
     }
 
     public function testSetSecretStoresSecret()

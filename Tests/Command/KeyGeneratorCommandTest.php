@@ -35,7 +35,7 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
     private $command;
 
     /**
-     * @var QuestionHelper ;
+     * @var QuestionHelper
      */
     private $helper;
 
@@ -55,26 +55,15 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         $this->helper = null;
     }
 
-    /**
-     * @group legacy
-     */
     public function testExecuteGeneratesKeySavedInDirAndWithAuthenticationSecret()
     {
-        $this->helper->setInputStream($this->getInputStream(array(
-            'yes',
-            'ThisIsASecret',
-            'yes',
-            'yes',
-        )));
-
-        // Symfony 3.2+
-        /*$this->commandTester->setInputs(array(
+        $this->commandTester->setInputs(array(
             'yes',
             'ThisIsASecret',
             // "\n" for <Enter>
             'yes',
             'yes',
-        ));*/
+        ));
 
         $this->commandTester->execute(array(
             'command' => $this->command->getName(),
@@ -94,17 +83,14 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
-     *
-     * @group legacy
      */
     public function testInteractThrowsException()
     {
-        // http://daleswanson.org/ascii.htm
-        $this->helper->setInputStream($this->getInputStream(array(
+        $this->commandTester->setInputs(array(
             'yes',
             "\x09\x11",
             "\n",
-        )));
+        ));
 
         $this->commandTester->execute(array(
             'command' => $this->command->getName(),
@@ -113,16 +99,13 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    /**
-     * @group legacy
-     */
     public function testExecuteAborted()
     {
-        $this->helper->setInputStream($this->getInputStream(array(
+        $this->commandTester->setInputs(array(
             'yes',
             'ThisIsSecret',
             'no',
-        )));
+        ));
 
         $this->commandTester->execute(array(
             'command' => $this->command->getName(),
@@ -133,19 +116,5 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
         $statusCode = $this->commandTester->getStatusCode();
 
         $this->assertSame(1, $statusCode, 'Returns 0 in case of success');
-    }
-
-    /**
-     * @param $input
-     *
-     * @return resource
-     */
-    private function getInputStream($input)
-    {
-        $stream = fopen('php://memory', 'r+', false);
-        fputs($stream, implode(PHP_EOL, $input));
-        rewind($stream);
-
-        return $stream;
     }
 }

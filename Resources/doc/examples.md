@@ -68,7 +68,7 @@ class CryptoController extends Controller
 
 			$str .= "Encoded Key: {$key->getEncoded()}<br />";
 
-			$cipherText = $this->get('mes_crypto.encryption')->encrypt($sensitiveData, $key);
+			$cipherText = $this->get('mes_crypto.encryption')->encryptWithKey($sensitiveData, $key);
 
 			$str .= "* Ciphertext: {$cipherText}<br />";
 
@@ -106,7 +106,7 @@ class CryptoController extends Controller
 			 */
 			$key = $this->get('mes_crypto.key_manager')->getKey();
 
-			$str .= "<br />* Sensitive decrypted data: " . $this->get('mes_crypto.encryption')->decrypt($cipherText, $key);
+			$str .= "<br />* Sensitive decrypted data: " . $this->get('mes_crypto.encryption')->decryptWithKey($cipherText, $key);
 		} catch (CryptoException $ex) {
 			throw new CryptoException($ex->getMessage());
 		}
@@ -171,7 +171,7 @@ class CryptoController extends Controller
 
 		$sensitiveData = "Ed ecco verso noi venir per nave un vecchio, bianco per antico pelo, gridando: \"Guai a voi, anime prave!.";
 
-		$user->sensitiveData = $this->get('mes_crypto.encryption')->encrypt($sensitiveData, $key);
+		$user->sensitiveData = $this->get('mes_crypto.encryption')->encryptWithKey($sensitiveData, $key);
 
 		// Save user.
 		$request->getSession()->set('user', $user);
@@ -206,7 +206,7 @@ class CryptoController extends Controller
 		$key = $this->get('mes_crypto.key_manager')->generateFromAscii($user->key, $user->password);
 
 		try {
-			$sensitiveDecryptedData = $this->get('mes_crypto.encryption')->decrypt($user->sensitiveData, $key);
+			$sensitiveDecryptedData = $this->get('mes_crypto.encryption')->decryptWithKey($user->sensitiveData, $key);
 		} catch(CryptoException $ex) {
 			throw new CryptoException($ex->getMessage());
 		}
@@ -318,7 +318,7 @@ class EncryptedSessionProxy extends SessionHandlerProxy
 	 */
 	private function decryptData($cipherText)
 	{
-		return $this->encryption->decrypt($cipherText, $this->keyManager->getKey());
+		return $this->encryption->decryptWithKey($cipherText, $this->keyManager->getKey());
 	}
 
 	/**
@@ -330,7 +330,7 @@ class EncryptedSessionProxy extends SessionHandlerProxy
 	 */
 	private function encryptData($plainText)
 	{
-		return $this->encryption->encrypt($plainText, $this->keyManager->getKey());
+		return $this->encryption->encryptWithKey($plainText, $this->keyManager->getKey());
 	}
 }
 ```
@@ -395,12 +395,12 @@ class BCryptPasswordEncryptEncoder extends BCryptPasswordEncoder
 	{
 		$digest = parent::encodePassword($raw, $salt);
 
-		return $this->encrypt->encrypt($digest, $this->keyManager->getKey());
+		return $this->encrypt->encryptWithKey($digest, $this->keyManager->getKey());
 	}
 
 	public function isPasswordValid($encoded, $raw, $salt)
 	{
-		$encoded = $this->encrypt->decrypt($encoded, $this->keyManager->getKey());
+		$encoded = $this->encrypt->decryptWithKey($encoded, $this->keyManager->getKey());
 
 		return parent::isPasswordValid($encoded, $raw, $salt);
 	}
@@ -719,7 +719,7 @@ class CustomEncryption extends AbstractEncryption
 	/**
 	 * {@inheritdoc}
 	 */
-	public function encrypt($plaintext, KeyInterface $key)
+	public function encryptWithKey($plaintext, KeyInterface $key)
 	{
 		return "encryptedData";
 	}
@@ -727,7 +727,7 @@ class CustomEncryption extends AbstractEncryption
 	/**
 	 * {@inheritdoc}
 	 */
-	public function decrypt($ciphertext, KeyInterface $key)
+	public function decryptWithKey($ciphertext, KeyInterface $key)
 	{
 		return "decryptedData";
 	}
