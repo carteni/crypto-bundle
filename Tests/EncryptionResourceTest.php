@@ -39,6 +39,19 @@ class EncryptionResourceTest extends \PHPUnit_Framework_TestCase
     private $cipherContentResourceFile;
     private $cipherContentResourceHandle;
 
+    protected function setUp()
+    {
+        $this->encryption = new Encryption();
+        $this->generator = new KeyGenerator();
+        $this->cipherContentResourceFile = __DIR__.'/cipherContentResourceFile.crypto';
+    }
+
+    protected function tearDown()
+    {
+        $this->encryption = null;
+        $this->generator = null;
+    }
+
     /* ===========================================
      *
      * EncryptionInterface::EncryptResourceWithKey
@@ -66,11 +79,14 @@ class EncryptionResourceTest extends \PHPUnit_Framework_TestCase
 
         $this->closeHandle($this->plainContentResourceHandle);
         $this->closeHandle($this->cipherContentResourceHandle);
+
+        $hash = md5_file($this->plainContentResourceFile);
         unlink($this->plainContentResourceFile);
 
         return array(
             'key' => $key->getEncoded(),
             'secret' => $key->getSecret(),
+            'hash' => $hash,
         );
     }
 
@@ -91,14 +107,8 @@ class EncryptionResourceTest extends \PHPUnit_Framework_TestCase
 
         $this->encryption->decryptResourceWithKey($this->cipherContentResourceHandle, $this->plainContentResourceHandle, $key);
 
-        $lines = file($this->plainContentResourceFile);
-
-        $this->assertCount(5, $lines);
-        $this->assertSame('Line 1', trim($lines[0]));
-        $this->assertSame('Line 2', trim($lines[1]));
-        $this->assertSame('Line 3', trim($lines[2]));
-        $this->assertSame('Line 4', trim($lines[3]));
-        $this->assertSame('Line 5', trim($lines[4]));
+        $this->assertCount(5, file($this->plainContentResourceFile));
+        $this->assertSame($args['hash'], md5_file($this->plainContentResourceFile), 'Original file mismatches the result of encrypt and decrypt');
         $this->assertGreaterThan(0, (new \SplFileInfo($this->cipherContentResourceFile))->getSize());
 
         $this->closeHandle($this->plainContentResourceHandle);
@@ -135,7 +145,13 @@ class EncryptionResourceTest extends \PHPUnit_Framework_TestCase
 
         $this->closeHandle($this->plainContentResourceHandle);
         $this->closeHandle($this->cipherContentResourceHandle);
+
+        $hash = md5_file($this->plainContentResourceFile);
         unlink($this->plainContentResourceFile);
+
+        return array(
+            'hash' => $hash,
+        );
     }
 
     /**
@@ -152,14 +168,8 @@ class EncryptionResourceTest extends \PHPUnit_Framework_TestCase
 
         $this->encryption->decryptResourceWithPassword($this->cipherContentResourceHandle, $this->plainContentResourceHandle, 'SuperPa$$word');
 
-        $lines = file($this->plainContentResourceFile);
-
-        $this->assertCount(5, $lines);
-        $this->assertSame('Line 1', trim($lines[0]));
-        $this->assertSame('Line 2', trim($lines[1]));
-        $this->assertSame('Line 3', trim($lines[2]));
-        $this->assertSame('Line 4', trim($lines[3]));
-        $this->assertSame('Line 5', trim($lines[4]));
+        $this->assertCount(5, file($this->plainContentResourceFile));
+        $this->assertSame($args['hash'], md5_file($this->plainContentResourceFile), 'Original file mismatches the result of encrypt and decrypt');
         $this->assertGreaterThan(0, (new \SplFileInfo($this->cipherContentResourceFile))->getSize());
 
         $this->closeHandle($this->plainContentResourceHandle);
@@ -167,19 +177,6 @@ class EncryptionResourceTest extends \PHPUnit_Framework_TestCase
 
         unlink($this->plainContentResourceFile);
         unlink($this->cipherContentResourceFile);
-    }
-
-    protected function setUp()
-    {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
-        $this->cipherContentResourceFile = __DIR__.'/cipherContentResourceFile.crypto';
-    }
-
-    protected function tearDown()
-    {
-        $this->encryption = null;
-        $this->generator = null;
     }
 
     private function createPlainContentFile($pushContent = true)

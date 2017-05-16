@@ -56,7 +56,7 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
         $this->keyGenerator->expects($this->once())
                            ->method('generate')
                            ->with(null)
-                           ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->keyManager->generate();
 
@@ -71,7 +71,7 @@ class KeyManagerTest extends \PHPUnit_Framework_TestCase
         $this->keyGenerator->expects($this->once())
                            ->method('generateFromAscii')
                            ->with($key_encoded, $secret)
-                           ->will($this->returnValue($this->getMock('Mes\Security\CryptoBundle\Model\KeyInterface')));
+                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->keyManager->generateFromAscii($key_encoded, $secret);
 
