@@ -17,7 +17,7 @@ use Mes\Security\CryptoBundle\Model\Key;
 use Mes\Security\CryptoBundle\Model\KeyInterface;
 
 /**
- * Class Encryption.
+ * Class Encryption
  */
 final class Encryption extends AbstractEncryption
 {
