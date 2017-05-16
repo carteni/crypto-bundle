@@ -19,7 +19,6 @@ encryptFileWithKey, decryptFileWithKey and use a secret to generate the Key.
 
 * Tests improved
 
-
 1.2.0 (2017-14-05)
 ------------------
 * Deprecated Encryption::encrypt. Added Encryption::encryptWithKey
