@@ -156,9 +156,9 @@ final class Encryption extends AbstractEncryption
     }
 
     /**
-     * @param Key|KeyInterface $key The KeyInterface instance to unlock used for Defuse encryption system.
+     * @param Key|KeyInterface $key The KeyInterface instance to unlock used for Defuse encryption system
      *
-     * @return \Defuse\Crypto\Key|\Defuse\Crypto\KeyProtectedByPassword The Defuse key.
+     * @return \Defuse\Crypto\Key|\Defuse\Crypto\KeyProtectedByPassword The Defuse key
      */
     private function unlockKey(Key $key)
     {
