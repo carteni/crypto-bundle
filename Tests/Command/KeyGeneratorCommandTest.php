@@ -12,7 +12,6 @@
 namespace Mes\Security\CryptoBundle\Tests\Command;
 
 use Mes\Security\CryptoBundle\Command\KeyGeneratorCommand;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -23,7 +22,7 @@ use Symfony\Component\Process\Process;
 /**
  * Class KeyGeneratorCommandTest.
  */
-class KeyGeneratorCommandTest extends TestCase
+class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var CommandTester
@@ -36,9 +35,25 @@ class KeyGeneratorCommandTest extends TestCase
     private $command;
 
     /**
-     * @var QuestionHelper ;
+     * @var QuestionHelper
      */
     private $helper;
+
+    protected function setUp()
+    {
+        $application = new Application();
+        $application->add(new KeyGeneratorCommand());
+        $this->command = $application->find('mes:crypto:generate-key');
+        $this->helper = $this->command->getHelper('question');
+        $this->commandTester = new CommandTester($this->command);
+    }
+
+    protected function tearDown()
+    {
+        $this->commandTester = null;
+        $this->command = null;
+        $this->helper = null;
+    }
 
     public function testExecuteGeneratesKeySavedInDirAndWithAuthenticationSecret()
     {
@@ -66,11 +81,11 @@ class KeyGeneratorCommandTest extends TestCase
         $this->assertRegExp('#secret = ThisIsASecret$#', $process->getOutput());
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testInteractThrowsException()
     {
-        $this->expectException(\RuntimeException::class);
-
-        // http://daleswanson.org/ascii.htm
         $this->commandTester->setInputs(array(
             'yes',
             "\x09\x11",
@@ -101,21 +116,5 @@ class KeyGeneratorCommandTest extends TestCase
         $statusCode = $this->commandTester->getStatusCode();
 
         $this->assertSame(1, $statusCode, 'Returns 0 in case of success');
-    }
-
-    protected function setUp()
-    {
-        $application = new Application();
-        $application->add(new KeyGeneratorCommand());
-        $this->command = $application->find('mes:crypto:generate-key');
-        $this->helper = $this->command->getHelper('question');
-        $this->commandTester = new CommandTester($this->command);
-    }
-
-    protected function tearDown()
-    {
-        $this->commandTester = null;
-        $this->command = null;
-        $this->helper = null;
     }
 }

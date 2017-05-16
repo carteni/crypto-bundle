@@ -12,14 +12,13 @@
 namespace Mes\Security\CryptoBundle\Tests\DependencyInjection;
 
 use Mes\Security\CryptoBundle\DependencyInjection\MesCryptoExtension;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Parser;
 
 /**
  * Class MesCryptoExtensionTest.
  */
-class MesCryptoExtensionTest extends TestCase
+class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ContainerBuilder */
     private $configuration;

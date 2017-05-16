@@ -12,14 +12,13 @@
 namespace Mes\Security\CryptoBundle\Tests\Command;
 
 use Mes\Security\CryptoBundle\Command\SecretGeneratorCommand;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class SecretGeneratorCommandTest.
  */
-class SecretGeneratorCommandTest extends TestCase
+class SecretGeneratorCommandTest extends \PHPUnit_Framework_TestCase
 {
     public function testExecuteGeneratesSecret40Chars()
     {

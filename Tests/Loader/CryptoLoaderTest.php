@@ -13,12 +13,11 @@ namespace Mes\Security\CryptoBundle\Tests\Loader;
 
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator;
 use Mes\Security\CryptoBundle\Loader\CryptoLoader;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class CryptoLoaderTest.
  */
-class CryptoLoaderTest extends TestCase
+class CryptoLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var CryptoLoader
@@ -31,6 +30,19 @@ class CryptoLoaderTest extends TestCase
     private $keyGenerator;
 
     private $tempCryptoFile;
+
+    protected function setUp()
+    {
+        $this->loader = new CryptoLoader(__DIR__.'/../key.crypto');
+        $this->keyGenerator = new KeyGenerator();
+    }
+
+    protected function tearDown()
+    {
+        $this->loader = null;
+        $this->keyGenerator = null;
+        @unlink($this->tempCryptoFile);
+    }
 
     public function testLoadKeyLoadsEncodedKey()
     {
@@ -111,18 +123,5 @@ EOF
         fclose($handle);
 
         new CryptoLoader($this->tempCryptoFile);
-    }
-
-    protected function setUp()
-    {
-        $this->loader = new CryptoLoader(__DIR__.'/../key.crypto');
-        $this->keyGenerator = new KeyGenerator();
-    }
-
-    protected function tearDown()
-    {
-        $this->loader = null;
-        $this->keyGenerator = null;
-        @unlink($this->tempCryptoFile);
     }
 }

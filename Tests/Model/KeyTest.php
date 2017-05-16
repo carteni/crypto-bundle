@@ -13,12 +13,11 @@ namespace Mes\Security\CryptoBundle\Tests\Model;
 
 use Defuse\Crypto\KeyProtectedByPassword;
 use Mes\Security\CryptoBundle\Model\Key;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class KeyTest.
  */
-class KeyTest extends TestCase
+class KeyTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateCreatesKey()
     {

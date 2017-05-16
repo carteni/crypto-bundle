@@ -49,8 +49,10 @@ interface EncryptionInterface
 
     /**
      * Decrypts a ciphertext string using a secret key.
-     * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong key and the case where you attempt to decrypt a modified (corrupted) ciphertext.
-     * It is up to the caller how to best deal with this ambiguity, as it depends on the application this bundle is being used in. If in doubt, consult with a professional cryptographer.
+     *
+     * * Cautions:
+     * * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong key and the case where you attempt to decrypt a modified (corrupted) ciphertext.
+     * * It is up to the caller how to best deal with this ambiguity, as it depends on the application this bundle is being used in. If in doubt, consult with a professional cryptographer.
      *
      * @param string            $ciphertext ciphertext to be decrypted
      * @param KeyInterface|null $key        Instance of KeyInterface containing the secret key for decryption
@@ -65,6 +67,10 @@ interface EncryptionInterface
      * This method is intentionally slow.
      * It applies key stretching to the password in order to make password guessing attacks more computationally expensive.
      * If you need a faster way to encrypt multiple ciphertexts under the same secret, use encryptWithKey and generate a Key protected by secret.
+     *
+     * * Cautions:
+     * * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong key and the case where you attempt to decrypt a modified (corrupted) ciphertext.
+     * * It is up to the caller how to best deal with this ambiguity, as it depends on the application this bundle is being used in. If in doubt, consult with a professional cryptographer.
      *
      * @param string $ciphertext ciphertext to be decrypted
      * @param string $password   A string containing the secret password used for decryption
@@ -99,7 +105,7 @@ interface EncryptionInterface
      *
      * @param string $inputFilename  Path to a file containing the plaintext to encrypt
      * @param string $outputFilename Path to save the ciphertext file
-     * @param string $password       The password used for decryption
+     * @param string $password       The password used for encryption
      */
     public function encryptFileWithPassword($inputFilename, $outputFilename, $password);
 
@@ -109,13 +115,13 @@ interface EncryptionInterface
      * The input ciphertext is processed in two passes.
      * The first pass verifies the integrity and the second pass performs the actual decryption of the file and writing to the output file.
      * This is done in a streaming manner so that only a small part of the file is ever loaded into memory at a time.
-     * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong key and the case where you attempt to decrypt a modified (corrupted) ciphertext.
-     * It is up to the caller how to best deal with this ambiguity, as it depends on the application this Bundle is being used in. If in doubt, consult with a professional cryptographer.
      *
      * * Cautions:
      * * Be aware that when an Exception is thrown, some partial plaintext data may have been written to the output.
      * * Any plaintext data that is output is guaranteed to be a prefix of the original plaintext (i.e. at worst it was truncated).
      * * This can only happen if an attacker modifies the input between the first pass (integrity check) and the second pass (decryption) over the file.
+     * * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong key and the case where you attempt to decrypt a modified (corrupted) ciphertext.
+     * * It is up to the caller how to best deal with this ambiguity, as it depends on the application this Bundle is being used in. If in doubt, consult with a professional cryptographer.
      *
      * @param string       $inputFilename  Path to a file containing the ciphertext to decrypt
      * @param string       $outputFilename Path to save the decrypted plaintext file
@@ -145,4 +151,76 @@ interface EncryptionInterface
      * @param string $password       The password used for decryption
      */
     public function decryptFileWithPassword($inputFilename, $outputFilename, $password);
+
+    /**
+     * Encrypts a resource (stream) with a secret key.
+     * Encrypts the data read from the input stream and writes it to the output stream.
+     *
+     * * Cautions:
+     * * The ciphertext output returned by this method is decryptable by anyone with knowledge of the key $key.
+     * * It is the caller's responsibility to keep $key secret.
+     * * Where $key should be stored is up to the caller and depends on the threat model the caller is designing their application under.
+     * * If you are unsure where to store $key, consult with a professional cryptographer to get help designing your application.
+     *
+     * @param mixed        $inputHandle  A handle to a resource (like a file pointer) containing the plaintext to encrypt
+     * @param mixed        $outputHandle A handle to a resource (like a file pointer) that the ciphertext will be written to
+     * @param KeyInterface $key          Instance of KeyInterface containing the secret key for encryption
+     */
+    public function encryptResourceWithKey($inputHandle, $outputHandle, KeyInterface $key);
+
+    /**
+     * Decrypts a resource (stream) with a secret key.
+     * Decrypts the data read from the input stream and writes it to the output stream.
+     * The input ciphertext is processed in two passes.
+     * The first pass verifies the integrity and the second pass performs the actual decryption of the file and writing to the output file.
+     * This is done in a streaming manner so that only a small part of the file is ever loaded into memory at a time.
+     *
+     * * Cautions:
+     * * Be aware that when an Exception is thrown, some partial plaintext data may have been written to the output.
+     * * Any plaintext data that is output is guaranteed to be a prefix of the original plaintext (i.e. at worst it was truncated).
+     * * This can only happen if an attacker modifies the input between the first pass (integrity check) and the second pass (decryption) over the file.
+     * * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong key and the case where you attempt to decrypt a modified (corrupted) ciphertext.
+     * * It is up to the caller how to best deal with this ambiguity, as it depends on the application this bundle is being used in. If in doubt, consult with a professional cryptographer.
+     *
+     * @param mixed             $inputHandle  A handle to a file-backed resource containing the ciphertext to decrypt. It must be a file not a network stream or standard input
+     * @param mixed             $outputHandle A handle to a resource (like a file pointer) that the plaintext will be written to
+     * @param KeyInterface|null $key          Instance of KeyInterface containing the secret key for decryption
+     */
+    public function decryptResourceWithKey($inputHandle, $outputHandle, KeyInterface $key);
+
+    /**
+     * Encrypts a resource (stream) with a password.
+     * Encrypts the data read from the input stream and writes it to the output stream.
+     * This method is intentionally slow, using a lot of CPU resources for a fraction of a second.
+     * It applies key stretching to the password in order to make password guessing attacks more computationally expensive.
+     * If you need a faster way to encrypt multiple ciphertexts under the same password, use encryptResourceWithKey and generate a Key protected by secret.
+     *
+     * @param mixed  $inputHandle  A handle to a resource (like a file pointer) containing the plaintext to encrypt
+     * @param mixed  $outputHandle A handle to a resource (like a file pointer) that the ciphertext will be written to
+     * @param string $password     The password used for encryption
+     */
+    public function encryptResourceWithPassword($inputHandle, $outputHandle, $password);
+
+    /**
+     * Decrypts a resource (stream) with a password.
+     * Decrypts the data read from the input stream and writes it to the output stream.
+     * This method is intentionally slow, using a lot of CPU resources for a fraction of a second.
+     * It applies key stretching to the password in order to make password guessing attacks more computationally expensive.
+     * If you need a faster way to encrypt multiple ciphertexts under the same password, use encryptResourceWithKey and generate a Key protected by secret.
+     * The input ciphertext is processed in two passes.
+     * The first pass verifies the integrity and the second pass performs the actual decryption of the file and writing to the output file.
+     * This is done in a streaming manner so that only a small part of the file is ever loaded into memory at a time.
+     *
+     * * Cautions:
+     * * Be aware that when an Exception is thrown, some partial plaintext data may have been written to the output.
+     * * Any plaintext data that is output is guaranteed to be a prefix of the original plaintext (i.e. at worst it was truncated).
+     * * This can only happen if an attacker modifies the input between the first pass (integrity check) and the second pass (decryption) over the file.
+     * * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong password and the case where you attempt to decrypt a modified (corrupted) ciphertext.
+     * * It is up to the caller how to best deal with this ambiguity, as it depends on the application this Bundle is being used in. If in doubt, consult with a professional cryptographer.
+     *
+     * @param mixed  $inputHandle  a handle to a file-backed resource containing the ciphertext to decrypt. It must be a file not a network stream or standard input
+     * @param mixed  $outputHandle A handle to a resource (like a file pointer) that the plaintext will be written to
+     * @param string $password     The password used for decryption
+     */
+    public function decryptResourceWithPassword($inputHandle, $outputHandle, $password);
 }

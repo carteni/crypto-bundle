@@ -12,12 +12,11 @@
 namespace Mes\Security\CryptoBundle\Tests;
 
 use Mes\Security\CryptoBundle\KeyManager;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 /**
  * Class KeyManagerTest.
  */
-class KeyManagerTest extends TestCase
+class KeyManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -30,17 +29,34 @@ class KeyManagerTest extends TestCase
     private $keyGenerator;
 
     /**
-     * @var \Mes\Security\CryptoBundle\KeyManager
+     * @var KeyManager
      */
     private $keyManager;
+
+    protected function setUp()
+    {
+        $this->keyStorage = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyStorage\KeyStorageInterface')
+                                 ->getMock();
+
+        $this->keyGenerator = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface')
+                                   ->getMock();
+
+        $this->keyManager = new KeyManager($this->keyStorage, $this->keyGenerator);
+    }
+
+    protected function tearDown()
+    {
+        $this->keyGenerator = null;
+        $this->keyStorage = null;
+        $this->keyManager = null;
+    }
 
     public function testGenerateCreatesKey()
     {
         $this->keyGenerator->expects($this->once())
                            ->method('generate')
                            ->with(null)
-                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                          ->getMock()));
+                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->keyManager->generate();
 
@@ -55,8 +71,7 @@ class KeyManagerTest extends TestCase
         $this->keyGenerator->expects($this->once())
                            ->method('generateFromAscii')
                            ->with($key_encoded, $secret)
-                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')
-                                                          ->getMock()));
+                           ->will($this->returnValue($this->getMockBuilder('Mes\Security\CryptoBundle\Model\KeyInterface')->getMock()));
 
         $key = $this->keyManager->generateFromAscii($key_encoded, $secret);
 
@@ -117,23 +132,5 @@ class KeyManagerTest extends TestCase
         $this->keyManager->setSecret('ThisIsASecret');
 
         $this->assertSame('ThisIsASecret', $this->keyManager->getSecret());
-    }
-
-    protected function setUp()
-    {
-        $this->keyStorage = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyStorage\KeyStorageInterface')
-                                 ->getMock();
-
-        $this->keyGenerator = $this->getMockBuilder('Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface')
-                                   ->getMock();
-
-        $this->keyManager = new KeyManager($this->keyStorage, $this->keyGenerator);
-    }
-
-    protected function tearDown()
-    {
-        $this->keyGenerator = null;
-        $this->keyStorage = null;
-        $this->keyManager = null;
     }
 }

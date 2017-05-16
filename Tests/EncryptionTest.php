@@ -17,12 +17,11 @@ use Mes\Security\CryptoBundle\EncryptionInterface;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator;
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGeneratorInterface;
 use Mes\Security\CryptoBundle\Model\KeyInterface;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class EncryptionTest.
  */
-class EncryptionTest extends TestCase
+class EncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var EncryptionInterface
@@ -33,6 +32,25 @@ class EncryptionTest extends TestCase
      * @var KeyGeneratorInterface
      */
     private $generator;
+
+    protected function setUp()
+    {
+        $this->encryption = new Encryption();
+        $this->generator = new KeyGenerator();
+    }
+
+    protected function tearDown()
+    {
+        $this->encryption = null;
+        $this->generator = null;
+    }
+
+    /* ===================================
+     *
+     * EncryptionInterface::EncryptWithKey
+     *
+     * ===================================
+     */
 
     /**
      * @return array
@@ -71,7 +89,7 @@ class EncryptionTest extends TestCase
      *
      * @param $args
      */
-    public function testDecryptThrowsExceptionBecauseCiphertextIsCorrupted($args)
+    public function testDecryptWithKeyThrowsExceptionBecauseCiphertextIsCorrupted($args)
     {
         $key = $this->generator->generateFromAscii($args['key_encoded']);
         $this->encryption->decryptWithKey($args['ciphertext'].'{FakeString}', $key);
@@ -89,6 +107,13 @@ class EncryptionTest extends TestCase
         $key = $this->generator->generateFromAscii($args['key_encoded'].'{FakeString}');
         $this->encryption->decryptWithKey($args['ciphertext'], $key);
     }
+
+    /* =============================================================
+     *
+     * EncryptionInterface::EncryptWithKey and secret-protected Key
+     *
+     * =============================================================
+     */
 
     /**
      * @return array
@@ -173,10 +198,17 @@ class EncryptionTest extends TestCase
         $this->encryption->decryptWithKey($args['ciphertext'].'{FakeString}', $keyFromAscii);
     }
 
+    /* ================================================================
+     *
+     * EncryptionInterface::EncryptFileWithKey and secret-protected Key
+     *
+     * ================================================================
+     */
+
     /**
      * @return array
      */
-    public function testEncryptWithKeyFileEncryptsFile()
+    public function testEncryptFileWithKeyEncryptsFile()
     {
         /** @var KeyInterface $key */
         $key = $this->generator->generate('CryptoSecret');
@@ -206,11 +238,11 @@ class EncryptionTest extends TestCase
     }
 
     /**
-     * @depends testEncryptWithKeyFileEncryptsFile
+     * @depends testEncryptFileWithKeyEncryptsFile
      *
      * @param $args
      */
-    public function testDecryptWithKeyFileDecryptsEncryptedFile($args)
+    public function testDecryptFileWithKeyDecryptsEncryptedFile($args)
     {
         /** @var KeyInterface $key */
         $key = $this->generator->generateFromAscii($args['key'], $args['secret']);
@@ -226,6 +258,13 @@ class EncryptionTest extends TestCase
         unlink($tmpDecryptedFile);
         unlink($args['encryptedFile']);
     }
+
+    /* ========================================
+     *
+     * EncryptionInterface::EncryptWithPassword
+     *
+     * ========================================
+     */
 
     /**
      * @return array
@@ -265,6 +304,13 @@ class EncryptionTest extends TestCase
     {
         $this->encryption->decryptWithPassword($args['ciphertext'], 'SuperSecretPa$$wordIncorrect');
     }
+
+    /* ============================================
+     *
+     * EncryptionInterface::EncryptFileWithPassword
+     *
+     * ============================================
+     */
 
     /**
      * @return array
@@ -332,17 +378,5 @@ class EncryptionTest extends TestCase
 
             throw $e;
         }
-    }
-
-    protected function setUp()
-    {
-        $this->encryption = new Encryption();
-        $this->generator = new KeyGenerator();
-    }
-
-    protected function tearDown()
-    {
-        $this->encryption = null;
-        $this->generator = null;
     }
 }
