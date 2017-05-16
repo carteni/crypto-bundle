@@ -110,9 +110,55 @@ final class Encryption extends AbstractEncryption
     }
 
     /**
-     * @param Key|KeyInterface $key
+     * {@inheritdoc}
      *
-     * @return \Defuse\Crypto\Key|\Defuse\Crypto\KeyProtectedByPassword
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function encryptResourceWithKey($inputHandle, $outputHandle, KeyInterface $key)
+    {
+        BaseCryptoFile::encryptResource($inputHandle, $outputHandle, $this->unlockKey($key));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     */
+    public function decryptResourceWithKey($inputHandle, $outputHandle, KeyInterface $key)
+    {
+        BaseCryptoFile::decryptResource($inputHandle, $outputHandle, $this->unlockKey($key));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function encryptResourceWithPassword($inputHandle, $outputHandle, $password)
+    {
+        BaseCryptoFile::encryptResourceWithPassword($inputHandle, $outputHandle, $password);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Defuse\Crypto\Exception\IOException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     */
+    public function decryptResourceWithPassword($inputHandle, $outputHandle, $password)
+    {
+        BaseCryptoFile::decryptResourceWithPassword($inputHandle, $outputHandle, $password);
+    }
+
+    /**
+     * @param Key|KeyInterface $key The KeyInterface instance to unlock used for Defuse encryption system
+     *
+     * @return \Defuse\Crypto\Key|\Defuse\Crypto\KeyProtectedByPassword The Defuse key
      */
     private function unlockKey(Key $key)
     {
