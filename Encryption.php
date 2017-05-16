@@ -16,6 +16,9 @@ use Defuse\Crypto\File as BaseCryptoFile;
 use Mes\Security\CryptoBundle\Model\Key;
 use Mes\Security\CryptoBundle\Model\KeyInterface;
 
+/**
+ * Class Encryption.
+ */
 final class Encryption extends AbstractEncryption
 {
     /**
