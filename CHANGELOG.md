@@ -3,7 +3,8 @@ Changelog
 
 2.1.0 (2017-XX-XX)
 ------------------
-* Added ability to create a custom CryptoLoader by the CryptoLoaderInterface.
+* Added mes_crypto.loader service to load encoded key and secret
+* Added ability to create a custom CryptoLoader
 
 2.0.0 (2017-XX-XX)
 ------------------

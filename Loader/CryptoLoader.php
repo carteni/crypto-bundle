@@ -14,7 +14,7 @@ namespace Mes\Security\CryptoBundle\Loader;
 /**
  * Class CryptoLoader.
  */
-class CryptoLoader
+class CryptoLoader extends AbstractCryptoLoader
 {
     private $resource;
 
