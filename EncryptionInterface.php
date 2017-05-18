@@ -218,7 +218,7 @@ interface EncryptionInterface
      * * It is impossible in principle to distinguish between the case where you attempt to decrypt with the wrong password and the case where you attempt to decrypt a modified (corrupted) ciphertext.
      * * It is up to the caller how to best deal with this ambiguity, as it depends on the application this Bundle is being used in. If in doubt, consult with a professional cryptographer.
      *
-     * @param mixed  $inputHandle  a handle to a file-backed resource containing the ciphertext to decrypt. It must be a file not a network stream or standard input
+     * @param mixed  $inputHandle  A handle to a file-backed resource containing the ciphertext to decrypt. It must be a file not a network stream or standard input
      * @param mixed  $outputHandle A handle to a resource (like a file pointer) that the plaintext will be written to
      * @param string $password     The password used for decryption
      */

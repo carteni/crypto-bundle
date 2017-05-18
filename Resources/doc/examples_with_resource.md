@@ -1,5 +1,5 @@
-Examples with Files
-===================
+Examples with Resources
+=======================
 
 Example 1
 ---------
@@ -8,9 +8,7 @@ Example 1
 namespace AppBundle\Controller;
 
 use Mes\Security\CryptoBundle\Exception\CryptoException;
-use Mes\Security\CryptoBundle\Model\KeyInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -23,74 +21,51 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class CryptoController extends Controller
 {
-    /**
-     * @Route("/example1/encryptFile", name="example1_file_encrypt")
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Mes\Security\CryptoBundle\Exception\CryptoException
-     */
-    public function example1EncFileAction(Request $request)
-    {
-        $str = "// Example 1: File Encryption<br /><br/>";
+	/**
+	 * @Route("/example1/encryptResourceWithPassword", name="example1_resource_pwd_encrypt")
+	 *
+	 * @return Response
+	 * @throws CryptoException
+	 */
+ 	public function example1EncResourceAction()
+ 	{
+ 		// Encryption.
+ 		$password = 'MySuperSecretPa$$word';
 
-        try {
+		// Create srcFile.txt file in this directory with following line:
+		// ---> This is a cipher text <---
 
-            /** @var KeyInterface $key */
-            $key = $this->get('mes_crypto.key_manager')
-                        ->getKey();
+ 		$srcName 	= __DIR__. '/srcFile.txt';
+ 		$destName 	= __DIR__ . '/destFile.dest';
+ 		$srcHandle 	= fopen($srcName, 'r');
+ 		$destHandle	= fopen($destName, 'w');
 
-            // Create file to encrypt.
-            $tmpfname = tempnam(sys_get_temp_dir(), 'CRYPTO_');
+ 		$this->get('mes_crypto.encryption')->encryptResourceWithPassword($srcHandle, $destHandle, $password);
 
-            $plainContent = "Dinanzi a me non fuor cose create se non etterne, e io etterno duro. Lasciate ogni speranza, voi ch'intrate.";
+ 		fclose($srcHandle);
+ 		fclose($destHandle);
 
-            $handle = fopen($tmpfname, "w");
-            fwrite($handle, $plainContent);
-            fclose($handle);
+ 		// Decryption.
+ 		$src2Handle  = fopen($destName, 'r');
+ 		$dest2Handle = fopen(__DIR__ . '/dest2.dest', 'w');
 
-            $filename = md5(uniqid());
+ 		$this->get('mes_crypto.encryption')->decryptResourceWithPassword($src2Handle, $dest2Handle, $password);
+ 		fclose($src2Handle);
+ 		fclose($dest2Handle);
 
-            $encryptedFilename = $this->getParameter('kernel.cache_dir')."/ENCRYPTED_$filename.crypto";
-
-            // Encryption
-            $this->get('mes_crypto.encryption')->encryptFile($tmpfname, $encryptedFilename, $key);
-
-            unlink($tmpfname);
-
-            $str .= "Plain content: $plainContent<br/><br/>";
-
-            $str .= sprintf("Encrypted file [%s]: %s", $encryptedFilename, file_get_contents($encryptedFilename));
-
-            // Decryption
-            $decryptedFilename = $this->getParameter('kernel.cache_dir')."/DECRYPTED_$filename.crypto";
-
-            $this->get('mes_crypto.encryption')->decryptFile($encryptedFilename, $decryptedFilename, $key);
-
-            $str .= sprintf("<br/><br/>Decrypted file [%s]: %s", $decryptedFilename, file_get_contents($decryptedFilename));
-
-        } catch (CryptoException $ex) {
-            throw new CryptoException($ex->getMessage());
-        }
-
-        $resp = new Response(sprintf("<!DOCTYPE html><html><head><title>Example 1</title></head><body>%s</body></html>", $str));
-
-        return $resp;
-    }
+ 		return new Response(hash_equals(md5_file($srcName), md5_file(__DIR__ . '/dest2.dest')) ? 'Equals' : 'Not Equals');
+ 	}
 }
 ```
 
-Example 2 (Image Encryption)
-----------------------------
+Example 2
+---------
 
 ```php
 namespace AppBundle\Controller;
 
 use Mes\Security\CryptoBundle\Exception\CryptoException;
-use Mes\Security\CryptoBundle\Model\KeyInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -103,59 +78,35 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class CryptoController extends Controller
 {
-    /**
-     * @Route("/example2/encryptImage", name="example2_image_encrypt")
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Mes\Security\CryptoBundle\Exception\CryptoException
-     */
-    public function example2EncFileAction(Request $request)
-    {
-        try {
+	/**
+	 * @Route("/example2/encryptResourceWithKey", name="example2_resource_key_encrypt")
+	 *
+	 * @return Response
+	 * @throws CryptoException
+	 */
+	public function example2EncResourceAction()
+	{
+		$key = $this->get('mes_crypto.key_manager')->getKey();
 
-            /** @var KeyInterface $key */
-            $key = $this->get('mes_crypto.key_manager')->getKey();
+		$srcHandle = fopen('php://temp', 'r+');
+		fputs($srcHandle, '--> This is a cipher text <--');
+		rewind($srcHandle);
 
-            $imageToEncrypt = new File($this->getParameter('kernel.root_dir').'/Resources/Lighthouse.jpg');
-            $imageToEncryptName = pathinfo($imageToEncrypt->getFilename(), PATHINFO_FILENAME);
-            $imageToEncryptExt = $imageToEncrypt->getExtension();
+		$destHandle = fopen('php://temp', 'w+');
 
-            $encryptedImageFilename = $this->getParameter('kernel.cache_dir')."/ENCRYPTED_$imageToEncryptName.$imageToEncryptExt";
+		$this->get('mes_crypto.encryption')->encryptResourceWithKey($srcHandle, $destHandle, $key);
+		rewind($srcHandle);
+		rewind($destHandle);
 
-            // Image encryption
-            $this->get('mes_crypto.encryption')->encryptFile(
-                    $imageToEncrypt->getRealPath(),
-                    $encryptedImageFilename,
-                    $key);
+		// Decryption.
+		$dest2Handle = fopen('php://temp', 'w+');
 
-            // Image decryption
-            $tmpfname = tempnam($this->getParameter('kernel.cache_dir'), 'CRYPTO_');
-            $this->get('mes_crypto.encryption')->decryptFile($encryptedImageFilename, $tmpfname, $key);
+		$this->get('mes_crypto.encryption')->decryptResourceWithKey($destHandle, $dest2Handle, $key);
+		rewind($dest2Handle);
 
-            ob_start();
-                readfile($tmpfname);
-
-            $imgData = base64_encode(ob_get_clean());
-            $img = "<img src= 'data:image/jpeg;base64, $imgData' />";
-
-            unlink($tmpfname);
-
-
-        } catch (CryptoException $ex) {
-            throw new CryptoException($ex->getMessage());
-        }
-
-        $html = <<<HTML
-<!DOCTYPE html>
-<html>
-    <head><title>Image Encryption</title></head>
-        <body>$img</body>
-</html>
-HTML;
-
-        return new Response($html);
-    }
+		return new Response(hash_equals(md5(stream_get_contents($srcHandle)), md5(stream_get_contents($dest2Handle)))
+				? 'Equals'
+				: 'Not Equals');
+	}
 }
 ```

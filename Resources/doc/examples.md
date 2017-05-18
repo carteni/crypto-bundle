@@ -538,8 +538,7 @@ class CryptoController extends Controller
 		/**
 		 * @var BCryptPasswordEncryptEncoder $encoder
 		 */
-		$encoder = $this->get('security.encoder_factory')
-						->getEncoder(MyUser::class);
+		$encoder = $this->get('security.encoder_factory')->getEncoder(MyUser::class);
 
 		/**
 		 * @var MyUser $user
@@ -554,8 +553,7 @@ class CryptoController extends Controller
 		// Authenticated token.
 		$token = new UsernamePasswordToken($user, $user->getPassword(), 'secured_area', $user->getRoles());
 
-		$request->getSession()
-				->set('_security_secured_area', serialize($token));
+		$request->getSession()->set('_security_secured_area', serialize($token));
 
 		var_dump($token);
 
@@ -578,8 +576,7 @@ class CryptoController extends Controller
 	{
 		$presentedPassword = "ImpossiblePassword";
 
-		$token = $request->getSession()
-						 ->get('_security_secured_area');
+		$token = $request->getSession()->get('_security_secured_area');
 
 		/**
 		 * @var UsernamePasswordToken $token
@@ -594,8 +591,7 @@ class CryptoController extends Controller
 		/**
 		 * @var BCryptPasswordEncryptEncoder $encoder
 		 */
-		$encoder = $this->get('security.encoder_factory')
-						->getEncoder(get_class($user));
+		$encoder = $this->get('security.encoder_factory')->getEncoder(get_class($user));
 
 		$passwordIsValid = $encoder->isPasswordValid($user->getPassword(), $presentedPassword, $user->getSalt());
 
