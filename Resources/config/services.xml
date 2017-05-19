@@ -5,29 +5,23 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <!-- Default Services -->
+        <!-- Default Key Storage -->
         <service id="mes_crypto.key_storage.default" class="Mes\Security\CryptoBundle\KeyStorage\KeyStorage" public="false" />
 
+        <!-- Default Key Generator -->
         <service id="mes_crypto.key_generator.default" class="Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator" public="false" />
 
+        <!-- Default Key Manager -->
         <service id="mes_crypto.key_manager.default" class="Mes\Security\CryptoBundle\KeyManager" public="false">
             <argument type="service" id="mes_crypto.key_storage" />
             <argument type="service" id="mes_crypto.key_generator" />
         </service>
 
+        <!-- Default Encryption -->
         <service id="mes_crypto.encryption.default" class="Mes\Security\CryptoBundle\Encryption" public="false" />
 
-        <service id="mes_crypto.crypto_loader" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false">
-            <argument /> <!-- resource -->
-        </service>
-
-        <service id="mes_crypto.key_factory" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false">
-            <factory service="mes_crypto.crypto_loader" method="loadKey" />
-        </service>
-
-        <service id="mes_crypto.secret_factory" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false">
-            <factory service="mes_crypto.crypto_loader" method="loadSecret" />
-        </service>
+        <!-- Default Loader -->
+        <service id="mes_crypto.loader.default" class="Mes\Security\CryptoBundle\Loader\CryptoLoader" public="false" />
 
         <!-- Decorators -->
         <service id="mes_crypto.key_manager_wrapper" class="Mes\Security\CryptoBundle\KeyManagerWrapper" public="false"
@@ -42,13 +36,13 @@
 
         <!-- Private Aliases -->
         <service id="mes_crypto.key_storage" alias="mes_crypto.key_storage.default" public="false" />
-
         <service id="mes_crypto.key_generator" alias="mes_crypto.key_generator.default" public="false" />
+        <service id="mes_crypto.loader" alias="mes_crypto.loader.default" />
 
         <!-- Public Aliases -->
         <service id="mes_crypto.key_manager" alias="mes_crypto.key_manager.default" />
-
         <service id="mes_crypto.encryption" alias="mes_crypto.encryption.default" />
+
     </services>
 
 </container>

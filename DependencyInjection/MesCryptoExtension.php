@@ -13,17 +13,34 @@ namespace Mes\Security\CryptoBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 /**
  * Class MesCryptoExtension.
  */
-class MesCryptoExtension extends ConfigurableExtension
+class MesCryptoExtension extends ConfigurableExtension implements CompilerPassInterface
 {
+    /**
+     * @var bool
+     */
+    private $loaderEnabled = false;
+
+    /**
+     * @var Expression
+     */
+    private $loadKey;
+
+    /**
+     * @var Expression
+     */
+    private $loadSecret;
+
     /**
      * @param array            $config
      * @param ContainerBuilder $container
@@ -56,6 +73,46 @@ class MesCryptoExtension extends ConfigurableExtension
     }
 
     /**
+     * @param ContainerBuilder $container
+     */
+    public function process(ContainerBuilder $container)
+    {
+        if (!$this->loaderEnabled) {
+            return;
+        }
+
+        foreach ($container->findTaggedServiceIds('mes_crypto.loader') as $id => $attributes) {
+            foreach ($attributes as $attribute) {
+
+                // Sets the loader resource.
+                $container->findDefinition($id)
+                          ->addMethodCall('setResource', array($attribute['resource']));
+
+                // Load secret from loader.
+                $container->getDefinition('mes_crypto.key_manager_wrapper')
+                          ->setMethodCalls(array())
+                          ->addMethodCall('setSecret', array($this->loadSecret));
+
+                // Sets Defuse KeyProtectedByPassword.
+                $container->findDefinition('mes_crypto.raw_key')
+                          ->setClass('Defuse\Crypto\KeyProtectedByPassword')
+                          ->setArguments(array($this->loadKey))
+                          ->setFactory(array(
+                              'Defuse\Crypto\KeyProtectedByPassword',
+                              'loadFromAsciiSafeString',
+                          ));
+
+                // Sets the key
+                $this->createKeyDefinition($container, $this->loadSecret);
+            }
+
+            $container->setAlias('mes_crypto.loader', $id);
+
+            return;
+        }
+    }
+
+    /**
      * Configures the passed container according to the merged configuration.
      *
      * @param array            $mergedConfig
@@ -65,6 +122,10 @@ class MesCryptoExtension extends ConfigurableExtension
     {
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        if ($this->isConfigEnabled($container, $mergedConfig['loader'])) {
+            $this->loaderEnabled = true;
+        }
 
         $this->createKeyStorage($mergedConfig, $container);
         $this->createKeyGenerator($mergedConfig, $container);
@@ -106,14 +167,18 @@ class MesCryptoExtension extends ConfigurableExtension
         $ext_secret = $config['external_secret'];
         $key = $config['key']['key'];
         $path = $config['key']['path'];
-        // Secret Factory Reference.
-        $loadSecret = $this->getSecretFactoryReference();
-        // Key Factory Reference.
-        $loadKey = $this->getKeyFactoryReference();
+
+        // Secret Expression.
+        $this->loadSecret = new Expression('service("mes_crypto.loader").loadSecret()');
+
+        // Key Expression.
+        $this->loadKey = new Expression('service("mes_crypto.loader").loadKey()');
 
         // Conditions.
         $createRandomKey = (null === $key) && (null === $path);
+
         $keyIsExternal = (true === !$createRandomKey) && (null !== $path) && (null === $key);
+
         $secretExists = (null !== $secret) || (true === $ext_secret);
         $secretIsExternal = (true === $secretExists) && (true === $ext_secret) && (null === $secret);
 
@@ -134,11 +199,11 @@ class MesCryptoExtension extends ConfigurableExtension
                                  'loadFromAsciiSafeString',
                              ));
             $rawKeyDefinition->setArguments(array(
-                $keyIsExternal ? $loadKey : $key,
+                $keyIsExternal ? $this->loadKey : $key,
             ));
         } else {
             $rawKeyDefinition->setClass($defuseKey)
-                             ->setArguments($secretExists ? array($secretIsExternal ? $loadSecret : $secret) : array())
+                             ->setArguments($secretExists ? array($secretIsExternal ? $this->loadSecret : $secret) : array())
                              ->setFactory($secretExists ? array(
                                  'Defuse\Crypto\KeyProtectedByPassword',
                                  'createRandomPasswordProtectedKey',
@@ -148,26 +213,17 @@ class MesCryptoExtension extends ConfigurableExtension
                              ));
         }
 
-        if ($createRandomKey || (!$createRandomKey && !$keyIsExternal)) {
-            $container->removeDefinition('mes_crypto.crypto_loader');
+        if (($createRandomKey || (!$createRandomKey && !$keyIsExternal)) && !$this->loaderEnabled) {
+            $container->removeAlias('mes_crypto.loader');
         }
 
         $container->setDefinition('mes_crypto.raw_key', $rawKeyDefinition)
                   ->setPublic(false);
 
         // Key
-        $keyDefinition = new Definition('Mes\Security\CryptoBundle\Model\Key', array(
-            new Reference('mes_crypto.raw_key'),
-            $secretExists ? ($secretIsExternal ? $loadSecret : $secret) : null,
-        ));
-        $keyDefinition->setFactory(array(
-            'Mes\Security\CryptoBundle\Model\Key',
-            'create',
-        ));
-        $container->setDefinition('mes_crypto.key', $keyDefinition)
-                  ->setPublic(false);
+        $this->createKeyDefinition($container, $secretExists ? ($secretIsExternal ? $this->loadSecret : $secret) : null);
 
-        $keyManagerDefinition = $container->getDefinition('mes_crypto.key_manager_wrapper');
+        $keyManagerDefinition = $container->findDefinition('mes_crypto.key_manager_wrapper');
 
         // Save the generated key.
         $keyManagerDefinition->addMethodCall('setKey', array(new Reference('mes_crypto.key')));
@@ -175,9 +231,24 @@ class MesCryptoExtension extends ConfigurableExtension
         // Save the secret.
         if ($secretExists) {
             $keyManagerDefinition->addMethodCall('setSecret', array(
-                $secretExists ? ($secretIsExternal ? $loadSecret : $secret) : null,
+                $secretExists ? ($secretIsExternal ? $this->loadSecret : $secret) : null,
             ));
         }
+    }
+
+    private function createKeyDefinition(ContainerBuilder $container, $secret)
+    {
+        $keyDefinition = new Definition('Mes\Security\CryptoBundle\Model\Key', array(
+            new Reference('mes_crypto.raw_key'),
+            $secret,
+        ));
+        $keyDefinition->setFactory(array(
+            'Mes\Security\CryptoBundle\Model\Key',
+            'create',
+        ))
+                      ->setPublic(false);
+
+        $container->setDefinition('mes_crypto.key', $keyDefinition);
     }
 
     /**
@@ -199,25 +270,7 @@ class MesCryptoExtension extends ConfigurableExtension
      */
     private function setCryptoLoaderResource(ContainerBuilder $container, $resource)
     {
-        $container->getDefinition('mes_crypto.crypto_loader')
-                  ->replaceArgument(0, $resource);
-    }
-
-    /**
-     * @return Reference
-     */
-    private function getSecretFactoryReference()
-    {
-        // Returns secret factory Reference.
-        return new Reference('mes_crypto.secret_factory');
-    }
-
-    /**
-     * @return Reference
-     */
-    private function getKeyFactoryReference()
-    {
-        // Returns key factory Reference.
-        return new Reference('mes_crypto.key_factory');
+        $container->findDefinition('mes_crypto.loader')
+                  ->addMethodCall('setResource', array($resource));
     }
 }

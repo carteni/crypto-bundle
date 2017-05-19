@@ -8,12 +8,20 @@
     <xsd:element name="config" type="config" />
 
     <xsd:complexType name="config">
+        <xsd:all>
+            <xsd:element name="loader" type="loader" minOccurs="0" maxOccurs="1" />
+        </xsd:all>
+
         <xsd:attribute name="key" type="xsd:string" />
         <xsd:attribute name="secret" type="xsd:string" />
         <xsd:attribute name="external-secret" type="xsd:boolean" />
         <xsd:attribute name="key-generator" type="xsd:string" />
         <xsd:attribute name="key-storage" type="xsd:string" />
         <xsd:attribute name="encryption" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="loader">
+        <xsd:attribute name="enabled" type="xsd:boolean" />
     </xsd:complexType>
 
 </xsd:schema>

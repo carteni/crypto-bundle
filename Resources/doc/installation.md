@@ -42,7 +42,6 @@ mes_crypto: ~
 
 ```yaml
 # Enables and generates a key from an encoded key without authentication secret
-# The encoded key can be loaded from a file in ini format (see below)
 mes_crypto:
     key: "your_encoded_key"
 ```
@@ -66,11 +65,26 @@ mes_crypto:
 ```
 
 ```yaml
-# The encoded key and the secret can be loaded from a file in ini format
+# The encoded key and the secret can be loaded from a file.
+# This bundle uses the default loader (mes_crypto.loader.default service) to load a ini file *.crypto.
 mes_crypto:
-    key: /home/vagrant/key.crypto
-    external_secret: true
+    key: /home/vagrant/key.crypto # Calls mes_crypto.loader.default->loadKey().
+    external_secret: true # Calls mes_crypto.loader.default->loadSecret().
 ```
+
+```yaml
+# The encoded key and the secret can be loaded by a custom loader that must be enabled.
+mes_crypto:
+    loader: ~
+
+# services.yml
+app.crypto_loader:
+  class: AppBundle\Security\Crypto\CustomLoader
+  public: false
+  tags:
+    - { name: mes_crypto.loader, resource: 'path/to/any/resource' }
+```
+
 
 * XML config version
 
@@ -142,19 +156,38 @@ mes_crypto:
 ```xml
 <?xml version="1.0" ?>
 
-<!-- The encoded key and the secret can be loaded from a file in ini format -->
+<!-- The encoded key and the secret can be loaded from a file.
+This bundle uses the default loader (mes_crypto.loader.default service) to load a ini file *.crypto -->
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xmlns:mes-crypto="http://multimediaexperiencestudio.it/schema/dic/crypto"
            xsi:schemaLocation="http://multimediaexperiencestudio.it/schema/dic/crypto
            http://multimediaexperiencestudio.it/schema/dic/crypto/crypto-1.0.xsd">
 
-    <mes-crypto:config key="/home/vagrant/key.crypto" external-secret="true"/>
+    <mes-crypto:config key="/home/vagrant/key.crypto" external-secret="true" />
 
 </container>
 ```
 
-* If you choose to store configurations externally, the `ini` format `.crypto` file stores the encoded key and the authentication secret (internally the bundle uses `parse_ini_file` PHP function). The file extension has to be `.crypto`.
+```xml
+<?xml version="1.0" ?>
+
+<!-- The encoded key and the secret can be loaded by a custom loader that must be enabled -->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:mes-crypto="http://multimediaexperiencestudio.it/schema/dic/crypto"
+           xsi:schemaLocation="http://multimediaexperiencestudio.it/schema/dic/crypto
+           http://multimediaexperiencestudio.it/schema/dic/crypto/crypto-1.0.xsd">
+
+    <mes-crypto:config>
+        <mes-crypto:loader enabled="true" />
+    </mes-crypto:config>
+
+</container>
+```
+
+* If you choose to store configurations externally using the default loader, the `ini` format `.crypto` file stores the encoded key and the authentication secret (internally the bundle uses `parse_ini_file` PHP function).
+The file extension has to be `.crypto`.
 
 ```ini
 ; key.crypto file
