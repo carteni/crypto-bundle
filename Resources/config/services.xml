@@ -34,6 +34,9 @@
             <argument type="service" id="mes_crypto.encryption_wrapper.inner"/>
         </service>
 
+        <!-- Secret Generator -->
+        <service id="mes_crypto.secret_generator" class="Mes\Security\CryptoBundle\Utils\SecretGenerator" public="false" />
+
         <!-- Private Aliases -->
         <service id="mes_crypto.key_storage" alias="mes_crypto.key_storage.default" public="false" />
         <service id="mes_crypto.key_generator" alias="mes_crypto.key_generator.default" public="false" />
@@ -43,6 +46,16 @@
         <service id="mes_crypto.key_manager" alias="mes_crypto.key_manager.default" />
         <service id="mes_crypto.encryption" alias="mes_crypto.encryption.default" />
 
+        <!-- Commands -->
+        <service id="mes_crypto.command.secret_generator_command" class="Mes\Security\CryptoBundle\Command\SecretGeneratorCommand">
+            <argument type="service" id="mes_crypto.secret_generator" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="mes_crypto.command.key_generator_command" class="Mes\Security\CryptoBundle\Command\KeyGeneratorCommand">
+            <argument type="service" id="mes_crypto.secret_generator" />
+            <tag name="console.command" />
+        </service>
     </services>
 
 </container>

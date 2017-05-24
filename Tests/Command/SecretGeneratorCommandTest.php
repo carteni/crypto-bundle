@@ -12,6 +12,7 @@
 namespace Mes\Security\CryptoBundle\Tests\Command;
 
 use Mes\Security\CryptoBundle\Command\SecretGeneratorCommand;
+use Mes\Security\CryptoBundle\Utils\SecretGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -20,20 +21,20 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SecretGeneratorCommandTest extends \PHPUnit_Framework_TestCase
 {
-    public function testExecuteGeneratesSecret40Chars()
-    {
-        $application = new Application();
-        $application->add(new SecretGeneratorCommand());
+	public function testExecuteGeneratesSecret40Chars()
+	{
+		$application = new Application();
+		$application->add(new SecretGeneratorCommand(new SecretGenerator()));
 
-        $command = $application->get('mes:crypto:generate-secret');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command' => $command->getName(),
-        ));
+		$command = $application->get('mes:crypto:generate-secret');
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName(),
+		));
 
-        $secret = $commandTester->getDisplay();
+		$secret = $commandTester->getDisplay();
 
-        $this->assertTrue(ctype_print($secret), 'is printable');
-        $this->assertSame(40, strlen($secret));
-    }
+		$this->assertTrue(ctype_print($secret), 'is printable');
+		$this->assertSame(40, strlen($secret));
+	}
 }

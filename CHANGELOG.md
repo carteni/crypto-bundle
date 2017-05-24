@@ -3,8 +3,8 @@ Changelog
 
 2.1.0 (2017-XX-XX)
 ------------------
-* Added mes_crypto.loader service to load encoded key and secret
-* Added ability to create a custom CryptoLoader
+* Added mes_crypto.loader service to load encoded key and secret by a custom CryptoLoader
+* KeyGeneratorCommand and SecretGeneratorCommand defined as services
 
 2.0.0 (2017-05-23)
 ------------------
