@@ -16,8 +16,8 @@ use Mes\Security\CryptoBundle\Utils\SecretGenerator;
  */
 class SecretGeneratorTest extends \PHPUnit_Framework_TestCase
 {
-	public function testGenerateRandomSecretGeneratesRandomString()
-	{
-		$this->assertTrue(ctype_print((new SecretGenerator())->generateRandomSecret()), 'is printable');
-	}
+    public function testGenerateRandomSecretGeneratesRandomString()
+    {
+        $this->assertTrue(ctype_print((new SecretGenerator())->generateRandomSecret()), 'is printable');
+    }
 }

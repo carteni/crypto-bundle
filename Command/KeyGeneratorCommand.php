@@ -186,7 +186,6 @@ key = $encodedKey
 $secretLine
 EOT
             );
-            $f->chmod($dir, 666, umask());
 
             $this->log($logger, "The encoded key saved in {$dir}\n", LogLevel::INFO);
         }
