@@ -52,8 +52,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //$output->write($this->generator->generateRandomSecret());
-
         $this->writeResults($output, array(
             'secret' => $this->generator->generateRandomSecret(),
         ));
