@@ -74,6 +74,8 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
             'verbosity' => OutputInterface::VERBOSITY_DEBUG,
         ));
 
+        die(var_dump(file_get_contents(__DIR__.'/../key.crypto')));
+
         $process = new Process('cat ./../key.crypto | grep "secret" ', __DIR__);
         $process->run();
 
