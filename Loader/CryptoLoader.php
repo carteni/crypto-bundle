@@ -14,20 +14,18 @@ namespace Mes\Security\CryptoBundle\Loader;
 /**
  * Class CryptoLoader.
  */
-class CryptoLoader
+class CryptoLoader extends AbstractCryptoLoader
 {
     private $resource;
 
     private $config;
 
     /**
-     * KeyLoader constructor.
+     * @param mixed $resource
      *
-     * @param $resource
-     *
-     * @throw \RuntimeException|\InvalidArgumentException
+     * @throws \RuntimeException|\InvalidArgumentException
      */
-    public function __construct($resource)
+    public function setResource($resource)
     {
         $this->resource = $resource;
 

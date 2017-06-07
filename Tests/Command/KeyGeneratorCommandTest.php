@@ -12,6 +12,7 @@
 namespace Mes\Security\CryptoBundle\Tests\Command;
 
 use Mes\Security\CryptoBundle\Command\KeyGeneratorCommand;
+use Mes\Security\CryptoBundle\Utils\SecretGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -42,7 +43,7 @@ class KeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $application = new Application();
-        $application->add(new KeyGeneratorCommand());
+        $application->add(new KeyGeneratorCommand(new SecretGenerator()));
         $this->command = $application->find('mes:crypto:generate-key');
         $this->helper = $this->command->getHelper('question');
         $this->commandTester = new CommandTester($this->command);

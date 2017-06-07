@@ -16,8 +16,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * Class Configuration
- * This is the class that validates and merges configuration from your
- * app/config files.
+ * This is the class that validates and merges configuration from your app/config files.
  */
 class Configuration implements ConfigurationInterface
 {
@@ -96,6 +95,11 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('encryption')
                 ->info('your_encryption_service_id. Default: Mes Encryption.')
                 ->defaultNull()
+            ->end()
+
+            ->arrayNode('loader')
+                ->info('your_loader_service_id. Disabled by default. To enabled: loader: ~')
+                ->canBeEnabled()
             ->end()
           ->end()
         ;

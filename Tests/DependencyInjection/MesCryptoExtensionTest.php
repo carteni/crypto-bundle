@@ -23,6 +23,17 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
     /** @var ContainerBuilder */
     private $configuration;
 
+    protected function setup()
+    {
+        $this->configuration = new ContainerBuilder();
+        $this->configuration->setParameter('kernel.root_dir', dirname(dirname(__DIR__)));
+    }
+
+    protected function tearDown()
+    {
+        unset($this->configuration);
+    }
+
     public function testContainerWithDefaultValues()
     {
         $loader = new MesCryptoExtension();
@@ -33,7 +44,7 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Defuse\Crypto\Key', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                    ->getClass(), 'Defuse\Crypto\Key class is correct');
 
-        $this->assertNotHasDefinition('mes_crypto.crypto_loader');
+        $this->assertNotHasDefinition('mes_crypto.loader');
     }
 
     public function testContainerWithRandomKeyAndSecret()
@@ -46,7 +57,7 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'KeyProtectedByPassword class is correct');
 
-        $this->assertNotHasDefinition('mes_crypto.crypto_loader');
+        $this->assertNotHasDefinition('mes_crypto.loader');
     }
 
     public function testContainerWithInternalKeyAndSecret()
@@ -58,7 +69,7 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertHasDefinition('mes_crypto.raw_key');
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'Defuse\Crypto\KeyProtectedByPassword class is correct');
-        $this->assertNotHasDefinition('mes_crypto.crypto_loader');
+        $this->assertNotHasDefinition('mes_crypto.loader');
     }
 
     public function testContainerWithExternalKeyAndSecret()
@@ -70,12 +81,7 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertHasDefinition('mes_crypto.raw_key');
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'Defuse\Crypto\KeyProtectedByPassword class is correct');
-        $this->assertHasDefinition('mes_crypto.crypto_loader');
-
-        $keyResource = $this->configuration->findDefinition('mes_crypto.crypto_loader')
-                                           ->getArgument(0);
-
-        $this->assertContains('key.crypto', $keyResource, sprintf('crypto file is %s', 'key.crypto'));
+        $this->assertHasDefinition('mes_crypto.loader');
     }
 
     public function testContainerWithFullConfigWithExternalKey()
@@ -87,27 +93,11 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertHasDefinition('mes_crypto.raw_key');
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'Defuse\Crypto\KeyProtectedByPassword class is correct');
-        $this->assertHasDefinition('mes_crypto.crypto_loader');
-
-        $keyResource = $this->configuration->findDefinition('mes_crypto.crypto_loader')
-                                           ->getArgument(0);
-
-        $this->assertContains('key.crypto', $keyResource, sprintf('crypto file is %s', 'key.crypto'));
+        $this->assertHasDefinition('mes_crypto.loader');
 
         $this->assertSame('custom_key_storage_service', (string) $this->configuration->getAlias('mes_crypto.key_storage'), 'custom_key_storage_service is correct alias');
         $this->assertSame('custom_key_generator_service', (string) $this->configuration->getAlias('mes_crypto.key_generator'), 'custom_key_generator_service is correct alias');
         $this->assertSame('custom_encryption_service', (string) $this->configuration->getAlias('mes_crypto.encryption'), 'custom_encryption_service is correct alias');
-    }
-
-    protected function setup()
-    {
-        $this->configuration = new ContainerBuilder();
-        $this->configuration->setParameter('kernel.root_dir', dirname(dirname(__DIR__)));
-    }
-
-    protected function tearDown()
-    {
-        unset($this->configuration);
     }
 
     /**
@@ -175,6 +165,21 @@ external_secret: true
 key_storage: custom_key_storage_service
 key_generator: custom_key_generator_service
 encryption: custom_encryption_service
+EOF;
+
+        $parser = new Parser();
+
+        return $parser->parse($yaml);
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getConfigWithExternalLoader()
+    {
+        $yaml = <<<'EOF'
+loader:
+    enabled; true
 EOF;
 
         $parser = new Parser();

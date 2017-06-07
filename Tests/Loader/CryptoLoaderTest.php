@@ -33,7 +33,8 @@ class CryptoLoaderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->loader = new CryptoLoader(__DIR__.'/../key.crypto');
+        $this->loader = new CryptoLoader();
+        $this->loader->setResource(__DIR__.'/../key.crypto');
         $this->keyGenerator = new KeyGenerator();
     }
 
@@ -68,7 +69,8 @@ EOF
         );
         fclose($handle);
 
-        $loader = new CryptoLoader($this->tempCryptoFile);
+        $loader = new CryptoLoader();
+        $loader->setResource($this->tempCryptoFile);
         $loader->loadKey();
     }
 
@@ -86,7 +88,8 @@ EOF
         );
         fclose($handle);
 
-        $loader = new CryptoLoader($this->tempCryptoFile);
+        $loader = new CryptoLoader();
+        $loader->setResource($this->tempCryptoFile);
         $loader->loadSecret();
     }
 
@@ -104,7 +107,8 @@ EOF
     {
         $fakeFile = '/var/www/fake';
 
-        new CryptoLoader($fakeFile);
+        $loader = new CryptoLoader();
+        $loader->setResource($fakeFile);
     }
 
     /**
@@ -122,6 +126,7 @@ EOF
         );
         fclose($handle);
 
-        new CryptoLoader($this->tempCryptoFile);
+        $loader = new CryptoLoader();
+        $loader->setResource($this->tempCryptoFile);
     }
 }

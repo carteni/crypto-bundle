@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 use Mes\Security\CryptoBundle\Exception\CryptoException;
 use Mes\Security\CryptoBundle\Model\KeyInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

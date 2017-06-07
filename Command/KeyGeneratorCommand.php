@@ -12,6 +12,7 @@
 namespace Mes\Security\CryptoBundle\Command;
 
 use Mes\Security\CryptoBundle\KeyGenerator\KeyGenerator;
+use Mes\Security\CryptoBundle\Utils\SecretGenerator;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Helper\DebugFormatterHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -31,11 +32,32 @@ class KeyGeneratorCommand extends AbstractCommand
 {
     private $secret;
     private $wantsToSaveSecret;
+
     /**
      * @var QuestionHelper
      */
     private $helper;
 
+    /**
+     * @var SecretGenerator
+     */
+    private $generator;
+
+    /**
+     * KeyGeneratorCommand constructor.
+     *
+     * @param SecretGenerator $generator
+     */
+    public function __construct(SecretGenerator $generator)
+    {
+        $this->generator = $generator;
+
+        parent::__construct();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         parent::initialize($input, $output);
@@ -46,6 +68,9 @@ class KeyGeneratorCommand extends AbstractCommand
         $this->symfonyStyle = $this->getStyle($input, $output);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this->setName('mes:crypto:generate-key')
@@ -63,6 +88,9 @@ EOF
              );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $dir = $input->getOption('dir');
@@ -73,7 +101,7 @@ EOF
         $wantsToGenerateSecret = $this->helper->ask($input, $output, $question);
 
         if ($wantsToGenerateSecret) {
-            $random = \bin2hex(random_bytes(20));
+            $random = $this->generator->generateRandomSecret();
             $this->symfonyStyle->newLine();
             $question = new Question($this->getQuestion('Insert your authentication secret or use this one randomly generated', $random), $random);
             $question->setValidator(function ($secret) {
@@ -101,6 +129,9 @@ EOF
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getLogger($output);
@@ -124,6 +155,7 @@ EOF
         if ($dir) {
             $this->log($logger, "The encoded key will be saved in {$dir}\n", LogLevel::INFO);
         }
+
         if ($secret) {
             $this->log($logger, "The encoded key will be generated with secret: {$secret}\n", LogLevel::INFO);
         }
@@ -154,7 +186,6 @@ key = $encodedKey
 $secretLine
 EOT
             );
-            $f->chmod($dir, 0440);
 
             $this->log($logger, "The encoded key saved in {$dir}\n", LogLevel::INFO);
         }
@@ -184,8 +215,7 @@ EOT
             '',
             '<info>Directory</info>',
             str_repeat('=', 9),
-            $options['dir'] ?: '',
-            '',
+            $options['dir'] ?: "No directory defined\n",
             '<info>Secret</info>',
             str_repeat('=', 6),
             $options['secret'] ?: '',
@@ -193,9 +223,7 @@ EOT
 
         if (!empty($options['dir']) && $output->isDebug()) {
 
-            /*
-             * @var DebugFormatterHelper
-             */
+            /** @var DebugFormatterHelper */
             $dh = $this->getHelperSet()
                        ->get('debug_formatter');
 
@@ -217,7 +245,7 @@ EOT
     }
 
     /**
-     * @return \Symfony\Component\Console\Input\InputDefinition
+     * @return InputDefinition
      */
     protected function createDefinition()
     {

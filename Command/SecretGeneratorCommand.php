@@ -11,15 +11,27 @@
 
 namespace Mes\Security\CryptoBundle\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Mes\Security\CryptoBundle\Utils\SecretGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class SecretGeneratorCommand.
  */
-class SecretGeneratorCommand extends Command
+class SecretGeneratorCommand extends AbstractCommand
 {
+    /**
+     * @var SecretGenerator
+     */
+    private $generator;
+
+    public function __construct(SecretGenerator $generator)
+    {
+        $this->generator = $generator;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,6 +52,19 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write(\bin2hex(random_bytes(20)));
+        $this->writeResults($output, array(
+            'secret' => $this->generator->generateRandomSecret(),
+        ));
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param $options
+     *
+     * @return string
+     */
+    protected function writeResults(OutputInterface $output, $options)
+    {
+        $output->write($options['secret']);
     }
 }

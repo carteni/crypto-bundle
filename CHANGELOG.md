@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.1.0 (2017-06-07)
+------------------
+* Added mes_crypto.loader service to load encoded key and secret by a custom CryptoLoader
+* KeyGeneratorCommand and SecretGeneratorCommand defined as services
+
 2.0.0 (2017-05-23)
 ------------------
 * Added Encryption::encryptResourceWithKey

@@ -12,6 +12,7 @@
 namespace Mes\Security\CryptoBundle\Tests\Command;
 
 use Mes\Security\CryptoBundle\Command\SecretGeneratorCommand;
+use Mes\Security\CryptoBundle\Utils\SecretGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -23,7 +24,7 @@ class SecretGeneratorCommandTest extends \PHPUnit_Framework_TestCase
     public function testExecuteGeneratesSecret40Chars()
     {
         $application = new Application();
-        $application->add(new SecretGeneratorCommand());
+        $application->add(new SecretGeneratorCommand(new SecretGenerator()));
 
         $command = $application->get('mes:crypto:generate-secret');
         $commandTester = new CommandTester($command);
