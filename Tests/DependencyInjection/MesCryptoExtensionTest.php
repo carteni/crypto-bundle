@@ -82,7 +82,6 @@ class MesCryptoExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Defuse\Crypto\KeyProtectedByPassword', $this->configuration->findDefinition('mes_crypto.raw_key')
                                                                                       ->getClass(), 'Defuse\Crypto\KeyProtectedByPassword class is correct');
         $this->assertHasDefinition('mes_crypto.loader');
-
     }
 
     public function testContainerWithFullConfigWithExternalKey()
