@@ -14,10 +14,10 @@ use Mes\Security\CryptoBundle\Utils\SecretGenerator;
 /**
  * Class SecretGeneratorTest.
  */
-class SecretGeneratorTest extends \PHPUnit\Framework\TestCase
+class SecretGeneratorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGenerateRandomSecretGeneratesRandomString()
-    {
-        $this->assertTrue(ctype_print((new SecretGenerator())->generateRandomSecret()), 'is printable');
-    }
+	public function testGenerateRandomSecretGeneratesRandomString()
+	{
+		$this->assertTrue(ctype_print((new SecretGenerator())->generateRandomSecret()), 'is printable');
+	}
 }
