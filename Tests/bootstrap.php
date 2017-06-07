@@ -9,12 +9,6 @@
  * file that was distributed with this source code.
  */
 
-register_shutdown_function(function () {
-    if (file_exists(__DIR__.'/key.crypto')) {
-        unlink(__DIR__.'/key.crypto');
-    }
-});
-
 if (!($loader = @include __DIR__.'/../vendor/autoload.php')) {
     echo <<<'EOT'
 You need to install the project dependencies using Composer:
