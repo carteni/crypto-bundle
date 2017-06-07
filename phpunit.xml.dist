@@ -4,9 +4,8 @@
 
     <testsuites>
         <testsuite name="Crypto Bundle Test Suite">
-            <exclude>./Tests/Loader/CryptoLoaderTest.php</exclude>
             <directory suffix="Test.php">./Tests/Command</directory>
-            <!--<directory suffix="Test.php">./Tests/Loader</directory>-->
+            <directory suffix="Test.php">./Tests/Loader</directory>
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
